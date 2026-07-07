@@ -1990,8 +1990,8 @@ body {
   font-size: var(--font-size-md);
   line-height: 2;
   color: var(--bakery-ink);
-  /* 노트 줄 느낌 — line-height:2 @ font-size~1rem → 약 32px 행간에 맞춤.
-     background-size와 줄 위치(31px, 32px)는 line-height:2 값과 연동됩니다. */
+  /* 노트 줄 느낌 — line-height:2, font-size:1rem 기준 행간 32px에 맞춤.
+     background-size:100% 32px, 줄 위치(31px/32px)는 line-height:2 (=32px)와 정확히 연동됩니다. */
   background-image: repeating-linear-gradient(
     transparent,
     transparent 31px,
@@ -2200,7 +2200,7 @@ body {
     border-radius: 14px;
   }
 
-  /* 선반 장식 아이템 일부 숨김 */
+  /* 모바일에서 선반 장식은 1~3번만 표시 — 좁은 화면에서 레이아웃 과밀 방지 */
   .shelf-item:nth-child(n+4) {
     display: none;
   }
