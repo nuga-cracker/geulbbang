@@ -252,15 +252,27 @@ function checkAwkwardSentences(text) {
     suggestions.push({ excerpt: safeExcerpt, message, suggestion });
   };
 
-  const particlePattern = /([가-힣]{1,12}?)(은는|는은|이가|가이|을를|를을|에에|가가|이이|은은|는는|을을|를를)(?=[^가-힣]|$)/g;
+  const mixedParticlePattern = /([가-힣]{1,12}?)(은는|는은|이가|가이|을를|를을)(?=[^가-힣]|$)/g;
   let particleMatch;
-  while ((particleMatch = particlePattern.exec(text)) !== null) {
+  while ((particleMatch = mixedParticlePattern.exec(text)) !== null) {
     const stem = particleMatch[1];
     const pair = particleMatch[2];
     addSuggestion(
       particleMatch[0],
       '조사가 겹쳐 보여 비문일 수 있어요.',
       `"${stem}${pair[0]}"처럼 조사 하나만 남기면 더 자연스러워요.`,
+    );
+  }
+
+  const repeatedParticlePattern = /([가-힣]{1,12}?)(은|는|이|가|을|를|에)\2(?=[^가-힣]|$)/g;
+  let repeatedParticleMatch;
+  while ((repeatedParticleMatch = repeatedParticlePattern.exec(text)) !== null) {
+    const stem = repeatedParticleMatch[1];
+    const particle = repeatedParticleMatch[2];
+    addSuggestion(
+      repeatedParticleMatch[0],
+      '조사가 반복되어 비문일 수 있어요.',
+      `"${stem}${particle}"처럼 조사 하나만 남기면 더 자연스러워요.`,
     );
   }
 
@@ -308,10 +320,11 @@ function checkAwkwardSentences(text) {
   const nominalizationMatches = [...text.matchAll(nominalizationPattern)];
   if (nominalizationMatches.length >= 2) {
     const first = nominalizationMatches[0][0];
+    const verbSuggestion = first.replace(/(을|를)\s+하(?:였다|했다|였습니다|했습니다)$/u, '했다');
     addSuggestion(
       first,
       '"~을/를 하다" 표현이 여러 번 보여 번역투처럼 느껴질 수 있어요.',
-      `가능하면 동사형(예: "${nominalizationMatches[0][1]}했다")으로 바꿔보세요.`,
+      `가능하면 동사형(예: "${verbSuggestion}")으로 바꿔보세요.`,
     );
   }
 
@@ -376,7 +389,7 @@ function calcScore(issues, stats, revisionCount, grammarSuggestions = []) {
   // 재작성 횟수에 따라 보너스
   score += Math.min(revisionCount * 5, 30);
 
-  // 비문/어색한 문장 제안은 아주 약하게만 반영
+  // 비문/어색한 문장 제안은 아주 약하게만 반영 (제안 1개당 -1점, 최대 -4점)
   score -= Math.min(grammarSuggestions.length, 4);
 
   return Math.max(0, Math.min(100, score));
