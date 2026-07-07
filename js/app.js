@@ -14,6 +14,9 @@ const SLIDER_LOW_THRESHOLD = 40;
 const SLIDER_HIGH_THRESHOLD = 60;
 const SLIDER_RANGE_FIRST_THIRD_MAX = 32;
 const SLIDER_RANGE_SECOND_THIRD_MAX = 66;
+const MAX_TOP_SUGGESTIONS = 3;
+const TOP_SUGGESTIONS_TITLE_BASE = '가장 먼저 보면 좋은 제안';
+const RECIPE_TOGGLE_LABEL = '문체 레시피 선택하기';
 const NO_ANALYSIS_TEXT_MESSAGE = '아직 분석할 글이 없어요. 먼저 글을 굽고 다시 눌러봐요! ✍️';
 const ANALYSIS_IDLE_MESSAGE = '아직 분석 전이에요. 글을 굽고 나서 눌러보세요! 🍞';
 
@@ -72,6 +75,9 @@ const resetBtn = document.getElementById('reset-btn');
 const toastContainer = document.getElementById('toast-container');
 const dailyUseBreadBtn = document.getElementById('daily-use-btn');
 const recipeCardsEl = document.getElementById('recipe-cards');
+const recipeToggleBtn = document.getElementById('recipe-toggle-btn');
+const recipeSelectorContent = document.getElementById('recipe-selector-content');
+const recipeSelectedLabel = document.getElementById('recipe-selected-label');
 const helpBtn = document.getElementById('help-btn');
 
 // 나만의 문체 DOM
@@ -134,6 +140,27 @@ function trimHistoryToMaxSize(list, maxSize) {
   if (!Array.isArray(list)) return [];
   if (list.length <= maxSize) return list;
   return list.slice(list.length - maxSize);
+}
+
+function buildTopSuggestions(issueMessages = [], grammarMessages = [], maxCount = MAX_TOP_SUGGESTIONS) {
+  const merged = [];
+  let issueIndex = 0;
+  let grammarIndex = 0;
+  let preferIssue = true;
+  while (merged.length < maxCount && (issueIndex < issueMessages.length || grammarIndex < grammarMessages.length)) {
+    if ((preferIssue && issueIndex < issueMessages.length) || grammarIndex >= grammarMessages.length) {
+      merged.push(issueMessages[issueIndex]);
+      issueIndex += 1;
+      preferIssue = false;
+    }
+    if (merged.length >= maxCount) break;
+    if ((!preferIssue && grammarIndex < grammarMessages.length) || issueIndex >= issueMessages.length) {
+      merged.push(grammarMessages[grammarIndex]);
+      grammarIndex += 1;
+      preferIssue = true;
+    }
+  }
+  return merged;
 }
 
 function createDefaultCustomStyle() {
@@ -336,6 +363,7 @@ function renderRecipeCards() {
     const card = createRecipeCard(author, state.selectedRecipe === author.id);
     recipeCardsEl.appendChild(card);
   });
+  updateRecipeSelectorSummary();
 }
 
 function createRecipeCard(author, isSelected) {
@@ -363,6 +391,26 @@ function handleRecipeSelect(recipeId) {
   } else {
     showToast('✨ 자유롭게 쓰는 모드예요!', 'info');
   }
+}
+
+function updateRecipeSelectorSummary() {
+  if (!recipeSelectedLabel) return;
+  const selectedProfile = getRecipeProfile(state.selectedRecipe || 'free');
+  recipeSelectedLabel.textContent = selectedProfile?.name || '✨ 자유롭게';
+}
+
+function initRecipeSelectorToggle() {
+  if (!recipeToggleBtn || !recipeSelectorContent) return;
+  const setExpanded = (expanded) => {
+    recipeSelectorContent.classList.toggle('hidden', !expanded);
+    recipeToggleBtn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+    recipeToggleBtn.textContent = expanded ? `${RECIPE_TOGGLE_LABEL} ▲` : `${RECIPE_TOGGLE_LABEL} ▼`;
+  };
+  setExpanded(false);
+  recipeToggleBtn.addEventListener('click', () => {
+    const expanded = recipeToggleBtn.getAttribute('aria-expanded') === 'true';
+    setExpanded(!expanded);
+  });
 }
 
 // ─────────────────────────────────────────────
@@ -397,20 +445,40 @@ function renderFeedback(result) {
   const { issues, grammarSuggestions = [], stats, score, praise } = result;
   const selectedProfile = getRecipeProfile(state.selectedRecipe);
   const scoreColor = score >= 80 ? '#27ae60' : score >= 60 ? '#f39c12' : '#e74c3c';
+  const issueSummaries = issues.map(issue => issue.message);
+  const grammarSummaries = grammarSuggestions.map(item => item.suggestion);
+  const topSuggestions = buildTopSuggestions(issueSummaries, grammarSummaries);
+  const topSuggestionTitle = `${TOP_SUGGESTIONS_TITLE_BASE} ${topSuggestions.length}개`;
+  const topSuggestionsHtml = topSuggestions.length > 0
+    ? `
+      <ul class="feedback-top-list">
+        ${topSuggestions.map(item => `<li>${escapeHtml(item)}</li>`).join('')}
+      </ul>
+    `
+    : '<p class="feedback-top-empty">✨ 지금 글의 흐름이 아주 좋아요! 이 분위기를 유지해봐요.</p>';
 
   let html = `
-    <div class="feedback-praise">
-      <span class="feedback-baker-icon">👨‍🍳</span>
-      <p>${escapeHtml(praise)}</p>
+    <div class="feedback-summary">
+      <div class="feedback-praise">
+        <span class="feedback-baker-icon">👨‍🍳</span>
+        <p>${escapeHtml(praise)}</p>
+      </div>
+      <div class="feedback-score" style="color:${scoreColor}">
+        오늘의 맛있음 점수: <strong>${score}점</strong>
+      </div>
+      <div class="feedback-top">
+        <p class="feedback-top-title">${topSuggestionTitle}</p>
+        ${topSuggestionsHtml}
+      </div>
     </div>
-    <div class="feedback-score" style="color:${scoreColor}">
-      맛있음 점수: <strong>${score}점</strong>
-    </div>
-    <div class="feedback-stats">
-      📊 글자 수: <strong>${stats.charCount}</strong>자 &nbsp;|&nbsp;
-      단어 수: <strong>${stats.wordCount}</strong>개 &nbsp;|&nbsp;
-      문장 수: <strong>${stats.sentenceCount}</strong>개
-    </div>
+    <details class="feedback-details">
+      <summary class="feedback-details-summary">자세한 첨삭 보기 ▼</summary>
+      <div class="feedback-details-content">
+        <div class="feedback-stats">
+          📊 글자 수: <strong>${stats.charCount}</strong>자 &nbsp;|&nbsp;
+          단어 수: <strong>${stats.wordCount}</strong>개 &nbsp;|&nbsp;
+          문장 수: <strong>${stats.sentenceCount}</strong>개
+        </div>
   `;
 
   if (issues.length === 0) {
@@ -473,6 +541,12 @@ function renderFeedback(result) {
       </div>
     `;
   }
+
+  html += `
+      <div class="feedback-growth">🌾 성장 현황: 레벨 ${state.level}, 현재 ${state.exp} EXP</div>
+      </div>
+    </details>
+  `;
 
   html += `
     <div class="feedback-actions">
@@ -1000,6 +1074,7 @@ function init() {
   updatePortfolio();
   updateDailyPrompt();
   renderRecipeCards();
+  initRecipeSelectorToggle();
   updateCustomStylePanel();
 
   bakeBtn.addEventListener('click', handleBake);
