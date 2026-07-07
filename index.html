@@ -18,13 +18,13 @@
   <div class="header-inner">
     <!-- 로고 -->
     <div class="header-brand">
-      <h1 class="site-title">🍞 글빵</h1>
+      <h1 class="site-title">🍞 글빵 제빵소</h1>
     </div>
 
-    <!-- 상태 표시 (레벨/EXP) -->
-    <div class="status-bar" aria-label="게임 상태">
-      <span id="level-display" class="status-level" aria-live="polite">레벨 1</span>
-      <span id="grade-display" class="status-grade" aria-live="polite">🫙 반죽</span>
+    <!-- 상태 표시 (레벨/EXP) — 게임 HUD 스타일 -->
+    <div class="status-bar hud-bar" aria-label="제빵사 상태">
+      <span id="level-display" class="status-level hud-level" aria-live="polite">견습 제빵사 Lv.1</span>
+      <span id="grade-display" class="status-grade hud-grade" aria-live="polite">🫙 반죽</span>
       <div class="exp-bar-wrapper" aria-label="경험치 바">
         <div class="exp-bar-bg" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
           <div id="exp-bar" class="exp-bar-fill" style="width:0%"></div>
@@ -55,26 +55,30 @@
   <!-- ─── 글쓰기 패널 ─── -->
   <div id="panel-write" class="tab-panel" role="tabpanel">
 
-    <!-- 글쓰기 영역 -->
-    <div class="card">
-      <h2 class="card-title">✍️ 글 쓰기</h2>
-      <div class="mascot-intro compact" aria-label="글빵 친구 응원">
-        <div class="bread-mascot mini-inline" role="img" aria-label="웃는 식빵 캐릭터">
-          <span class="mascot-face" aria-hidden="true">
-            <span class="mascot-eye left"></span>
-            <span class="mascot-eye right"></span>
-            <span class="mascot-smile"></span>
-            <span class="mascot-cheek left"></span>
-            <span class="mascot-cheek right"></span>
-          </span>
+    <!-- 글쓰기 영역: 제빵소 작업대 -->
+    <div class="bakery-workshop-card">
+
+      <!-- 배경 장식 (주방 벽/선반/오븐 분위기) -->
+      <div class="bakery-backdrop" aria-hidden="true">
+        <div class="bakery-shelf">
+          <span class="shelf-item">🪴</span>
+          <span class="shelf-item">🏺</span>
+          <span class="shelf-item">🥛</span>
+          <span class="shelf-item">🧂</span>
+          <span class="shelf-item">📖</span>
         </div>
-        <p class="mascot-copy">한 문단만 먼저 써보고, 빵 굽기로 다듬어봐요.</p>
+        <div class="bakery-window" aria-label="주방 창문 장식">
+          <div class="window-frame">
+            <span class="window-pane">🌤️</span>
+          </div>
+        </div>
+        <div class="bakery-oven-hint" aria-hidden="true">🔥</div>
       </div>
 
-      <!-- 오늘의 글감 -->
-      <div class="daily-prompt-bar" aria-label="오늘의 글감">
-        <div class="daily-prompt-header">
-          <span class="daily-prompt-label">📝 오늘의 글감</span>
+      <!-- 오늘의 주문서 -->
+      <section class="order-ticket" aria-label="오늘 들어온 주문서">
+        <div class="order-ticket-header">
+          <span class="order-ticket-label">📜 오늘 들어온 주문서</span>
           <div class="daily-prompt-pills" id="daily-prompt-pills" aria-hidden="true"></div>
         </div>
         <p id="daily-prompt" class="daily-prompt-text">글감 불러오는 중...</p>
@@ -83,31 +87,53 @@
           <span class="daily-prompt-starter" id="daily-prompt-starter"></span>
         </div>
         <div class="daily-prompt-actions">
-          <button id="daily-use-btn" class="btn btn-secondary btn-sm">이 주제로 쓰기</button>
-          <button id="daily-next-btn" class="btn btn-ghost btn-sm">다른 글감 보기 🎲</button>
-          <button id="daily-template-btn" class="btn btn-ghost btn-sm">3문장 틀 넣기 ✏️</button>
+          <button id="daily-use-btn" class="btn btn-secondary btn-sm">이 주문으로 시작</button>
+          <button id="daily-next-btn" class="btn btn-ghost btn-sm">다른 주문 보기 🎲</button>
+          <button id="daily-template-btn" class="btn btn-ghost btn-sm">3문장 반죽 틀 넣기 ✏️</button>
         </div>
         <p class="prompt-hint-note">💡 처음엔 3문장만 써도 충분해요.</p>
+      </section>
+
+      <!-- 작업대 영역 -->
+      <div class="workbench-zone">
+        <!-- 마스코트 응원 -->
+        <div class="mascot-intro compact" aria-label="글빵 친구 응원">
+          <div class="bread-mascot mini-inline" role="img" aria-label="웃는 식빵 캐릭터">
+            <span class="mascot-face" aria-hidden="true">
+              <span class="mascot-eye left"></span>
+              <span class="mascot-eye right"></span>
+              <span class="mascot-smile"></span>
+              <span class="mascot-cheek left"></span>
+              <span class="mascot-cheek right"></span>
+            </span>
+          </div>
+          <p class="mascot-copy">첫 문장만 써도 괜찮아요. 반죽은 천천히 치대도 돼요. 🍞</p>
+        </div>
+
+        <!-- 반죽 노트 (textarea) -->
+        <div class="dough-note-wrapper writing-wrapper">
+          <div class="dough-note-label" aria-hidden="true">✍️ 반죽 노트</div>
+          <textarea
+            id="writing-area"
+            class="writing-area dough-note"
+            placeholder="첫 문장만 써도 괜찮아요.&#10;예) 오늘은 이상하게 빵 냄새가 생각났다..."
+            aria-label="글쓰기 영역 — 반죽 노트"
+            rows="10"
+          ></textarea>
+          <span id="char-count" class="char-counter" aria-live="polite">0자</span>
+        </div>
+
+        <!-- 오븐 버튼 -->
+        <div class="bake-btn-wrapper oven-btn-wrapper">
+          <button id="bake-btn" class="btn btn-primary btn-oven" aria-label="오븐에 넣고 첨삭받기">
+            🔥 오븐에 넣고 첨삭받기
+          </button>
+        </div>
+
+        <p class="write-core-note">💡 문체 레시피와 시그니처 문체는 아래에서 필요할 때 펼쳐 선택할 수 있어요.</p>
       </div>
 
-      <div class="writing-wrapper">
-        <textarea
-          id="writing-area"
-          class="writing-area"
-          placeholder="첫 문장만 써도 괜찮아요.&#10;예) 오늘은 이상하게 빵 냄새가 생각났다..."
-          aria-label="글쓰기 영역"
-          rows="10"
-        ></textarea>
-        <span id="char-count" class="char-counter" aria-live="polite">0자</span>
-      </div>
-      <div class="bake-btn-wrapper">
-        <button id="bake-btn" class="btn btn-primary" aria-label="빵 굽기 — 첨삭받기">
-          🔥 빵 굽기 (첨삭받기)
-        </button>
-      </div>
-
-      <p class="write-core-note">💡 문체 레시피와 시그니처 문체는 아래에서 필요할 때 펼쳐 선택할 수 있어요.</p>
-    </div>
+    </div><!-- /.bakery-workshop-card -->
 
     <!-- 레시피 선택 -->
     <div class="recipe-selector-section" aria-label="문체 레시피 선택">
@@ -126,9 +152,9 @@
       </div>
     </div>
 
-    <!-- 첨삭 피드백 -->
-    <div id="feedback-section" class="card hidden" aria-live="polite" aria-label="첨삭 결과">
-      <h2 class="card-title">👨‍🍳 첨삭 결과</h2>
+    <!-- 첨삭 피드백 — 제빵사의 메모 -->
+    <div id="feedback-section" class="card baker-memo-card hidden" aria-live="polite" aria-label="제빵사의 메모">
+      <h2 class="card-title">👨‍🍳 제빵사의 메모</h2>
       <div id="feedback-content"></div>
     </div>
 
@@ -217,10 +243,10 @@
 
   <!-- ─── 진열장 패널 ─── -->
   <div id="panel-portfolio" class="tab-panel hidden" role="tabpanel">
-    <div class="card">
+    <div class="card bakery-shelf-card">
       <h2 class="card-title">🗂️ 내 빵 진열장</h2>
       <p class="helper-text">첨삭 후 "진열장에 추가" 버튼을 눌러 완성한 글을 저장해 보세요!</p>
-      <div id="portfolio-list" class="portfolio-list" aria-label="완성한 글 목록">
+      <div id="portfolio-list" class="portfolio-list bakery-shelf-list" aria-label="완성한 글 목록">
         <p class="empty-msg">아직 완성한 빵이 없어요. 글을 쓰고 진열장에 추가해봐요! 🍞</p>
       </div>
     </div>
