@@ -18,6 +18,8 @@ const DEFAULT_STATE = {
   streakDays: 0,              // 연속 글쓰기 일수
   dailyDone: false,           // 오늘 글쓰기 완료 여부
   lastDailyDate: null,        // 마지막 오늘의 빵 완료 날짜
+  selectedRecipe: 'free',     // 마지막으로 선택한 문체 레시피 ID ('free' = 자유롭게)
+  recipeUsage: {},            // 문체 레시피별 사용 횟수 { recipeId: count }
 };
 
 /**

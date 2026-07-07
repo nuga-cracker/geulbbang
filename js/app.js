@@ -6,6 +6,7 @@
 import { analyzeText } from './checker.js';
 import { addExp, calcExpGain, checkBadges, getBreadGrade, expForNextLevel, getDailyPrompt, BADGE_DEFS } from './game.js';
 import { loadState, saveState, resetState, todayString } from './storage.js';
+import { AUTHORS, getAuthorById } from './authors.js';
 
 // ─────────────────────────────────────────────
 // 상태 초기화
@@ -35,6 +36,7 @@ const dailyPromptEl = document.getElementById('daily-prompt');
 const resetBtn      = document.getElementById('reset-btn');
 const toastContainer = document.getElementById('toast-container');
 const dailyUseBreadBtn = document.getElementById('daily-use-btn');
+const recipCardsEl  = document.getElementById('recipe-cards');
 
 // ─────────────────────────────────────────────
 // 유틸: 토스트 메시지 표시
@@ -93,10 +95,12 @@ function updatePortfolio() {
   sorted.forEach((item, idx) => {
     const el = document.createElement('div');
     el.className = 'portfolio-item';
+    const recipeLabel = item.recipeName ? `<span class="portfolio-recipe">${escapeHtml(item.recipeName)}</span>` : '';
     el.innerHTML = `
       <div class="portfolio-header">
         <span class="portfolio-grade">${item.gradeEmoji} ${item.gradeName}</span>
         <span class="portfolio-score">맛있음 ${item.score}점</span>
+        ${recipeLabel}
         <span class="portfolio-date">${item.date}</span>
       </div>
       <p class="portfolio-text">${escapeHtml(item.text.slice(0, 100))}${item.text.length > 100 ? '...' : ''}</p>
@@ -109,6 +113,58 @@ function updatePortfolio() {
 function updateDailyPrompt() {
   const prompt = getDailyPrompt();
   dailyPromptEl.textContent = `📝 오늘의 글감: ${prompt}`;
+}
+
+// ─────────────────────────────────────────────
+// 레시피 카드 렌더링
+// ─────────────────────────────────────────────
+function renderRecipeCards() {
+  if (!recipCardsEl) return;
+  recipCardsEl.innerHTML = '';
+
+  // '자유롭게' 카드 (선택 안 함)
+  const freeCard = createRecipeCard({
+    id: 'free',
+    name: '✨ 자유롭게',
+    mood: '나만의 스타일로 자유롭게!',
+  }, state.selectedRecipe === 'free');
+  recipCardsEl.appendChild(freeCard);
+
+  // 작가 카드
+  AUTHORS.forEach(author => {
+    const card = createRecipeCard(author, state.selectedRecipe === author.id);
+    recipCardsEl.appendChild(card);
+  });
+}
+
+function createRecipeCard(author, isSelected) {
+  const card = document.createElement('div');
+  card.className = `recipe-card${isSelected ? ' selected' : ''}`;
+  card.setAttribute('role', 'option');
+  card.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+  card.dataset.id = author.id;
+
+  const nameLine = author.name || author.id;
+  const moodLine = author.mood || '';
+
+  card.innerHTML = `
+    <span class="recipe-card-name">${escapeHtml(nameLine)}</span>
+    <span class="recipe-card-mood">${escapeHtml(moodLine)}</span>
+  `;
+  card.addEventListener('click', () => handleRecipeSelect(author.id));
+  return card;
+}
+
+function handleRecipeSelect(recipeId) {
+  state.selectedRecipe = recipeId;
+  saveState(state);
+  renderRecipeCards();
+  const author = getAuthorById(recipeId);
+  if (author) {
+    showToast(`🍽️ "${author.name}" 레시피를 선택했어요!`, 'info');
+  } else {
+    showToast('✨ 자유롭게 쓰는 모드예요!', 'info');
+  }
 }
 
 function escapeHtml(str) {
@@ -151,6 +207,7 @@ function checkStreak() {
 function renderFeedback(result) {
   const { issues, stats, score, praise } = result;
   const grade = getBreadGrade(state.level);
+  const selectedAuthor = getAuthorById(state.selectedRecipe);
 
   // 점수 색상
   const scoreColor = score >= 80 ? '#27ae60' : score >= 60 ? '#f39c12' : '#e74c3c';
@@ -191,6 +248,20 @@ function renderFeedback(result) {
     html += `<p class="feedback-encourage">✏️ 고쳐쓰기를 해보세요! 고칠수록 경험치가 더 많이 올라요! 🎮</p>`;
   }
 
+  // 문체 레시피 방향 코멘트
+  if (selectedAuthor) {
+    const encouragement = selectedAuthor.encouragements[Math.floor(Math.random() * selectedAuthor.encouragements.length)];
+    const guideline = selectedAuthor.editingGuidelines[Math.floor(Math.random() * selectedAuthor.editingGuidelines.length)];
+    html += `
+      <div class="recipe-feedback-section">
+        <div class="recipe-feedback-title">🍽️ ${escapeHtml(selectedAuthor.name)} 관점에서 보면…</div>
+        <p class="recipe-feedback-encouragement">${escapeHtml(encouragement)}</p>
+        <p class="recipe-feedback-guideline">💡 이렇게 다듬어봐요: ${escapeHtml(guideline)}</p>
+        <p class="recipe-feedback-mood">${escapeHtml(selectedAuthor.mood)}</p>
+      </div>
+    `;
+  }
+
   // 진열장 추가 버튼
   html += `
     <div class="feedback-actions">
@@ -212,6 +283,7 @@ function renderFeedback(result) {
 // ─────────────────────────────────────────────
 function saveToPortfolio(result) {
   const grade = getBreadGrade(state.level);
+  const selectedAuthor = getAuthorById(state.selectedRecipe);
   const item = {
     id: Date.now(),
     text: currentText,
@@ -221,13 +293,15 @@ function saveToPortfolio(result) {
     revisionCount: currentRevisionCount,
     charCount: result.stats.charCount,
     date: todayString(),
+    recipeId: state.selectedRecipe || 'free',
+    recipeName: selectedAuthor ? selectedAuthor.name : '✨ 자유롭게',
   };
   state.portfolio.push(item);
   saveState(state);
   updatePortfolio();
   showToast('🗂️ 진열장에 추가됐어요!', 'success');
   // 배지 재확인
-  const newBadges = checkBadges(state, { score: result.score, charCount: result.stats.charCount, revisionCount: currentRevisionCount });
+  const newBadges = checkBadges(state, { score: result.score, charCount: result.stats.charCount, revisionCount: currentRevisionCount, selectedRecipe: state.selectedRecipe });
   newBadges.forEach(b => showToast(`🏅 배지 획득: ${b.name}`, 'badge'));
   updateBadgeList();
   saveState(state);
@@ -260,6 +334,12 @@ function handleBake() {
   // 연속 출석 체크
   checkStreak();
 
+  // 문체 레시피 사용 횟수 업데이트
+  if (state.selectedRecipe && state.selectedRecipe !== 'free') {
+    state.recipeUsage = state.recipeUsage || {};
+    state.recipeUsage[state.selectedRecipe] = (state.recipeUsage[state.selectedRecipe] || 0) + 1;
+  }
+
   // EXP 계산 및 적용
   const expGain = calcExpGain({
     score: result.score,
@@ -283,6 +363,7 @@ function handleBake() {
     score: result.score,
     charCount: result.stats.charCount,
     revisionCount: currentRevisionCount,
+    selectedRecipe: state.selectedRecipe,
   });
 
   // 저장
@@ -334,6 +415,7 @@ function handleReset() {
   updateBadgeList();
   updatePortfolio();
   updateCharCount();
+  renderRecipeCards();
   showToast('🌾 초기화됐어요. 새 반죽으로 시작해봐요!', 'info');
 }
 
@@ -386,6 +468,7 @@ function init() {
   updateBadgeList();
   updatePortfolio();
   updateDailyPrompt();
+  renderRecipeCards();
 
   // 이벤트 바인딩
   bakeBtn.addEventListener('click', handleBake);
