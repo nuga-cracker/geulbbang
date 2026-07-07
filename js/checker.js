@@ -108,7 +108,7 @@ function tokenizeWords(text) {
 const STYLE_STOPWORDS = new Set([
   '그리고', '그래서', '하지만', '그러나', '또', '또한', '그런데', '저는', '나는', '내가', '제가', '우리', '너무',
   '정말', '진짜', '아주', '매우', '이다', '있다', '없다', '했다', '한다', '한다면', '같다', '것', '수', '이', '그', '저',
-  '오늘', '요즘', '에서', '에게', '으로', '까지', '부터', '하면', '하며', '하고', '하는', '했다', '했다가',
+  '오늘', '요즘', '에서', '에게', '으로', '까지', '부터', '하면', '하며', '하고', '하는', '했다가',
 ]);
 
 // ─────────────────────────────────────────────
@@ -346,6 +346,20 @@ export function analyzeText(text, revisionCount = 0) {
  * @returns {{avgSentenceLength:number,sentenceStyle:string,topWords:string[],questionCount:number,exclamationCount:number,toneTrend:string,formalCount:number,informalCount:number,sampleSize:number}}
  */
 export function analyzeWritingFingerprint(texts = []) {
+  if (!Array.isArray(texts)) {
+    return {
+      avgSentenceLength: 0,
+      sentenceStyle: '균형 잡힌 편',
+      topWords: [],
+      questionCount: 0,
+      exclamationCount: 0,
+      toneTrend: '균형형',
+      formalCount: 0,
+      informalCount: 0,
+      sampleSize: 0,
+    };
+  }
+
   const validTexts = texts.filter(t => typeof t === 'string' && t.trim().length > 0);
   const merged = validTexts.join('\n');
   const sentences = splitSentences(merged);

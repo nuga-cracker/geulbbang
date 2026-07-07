@@ -10,6 +10,8 @@ import { AUTHORS, getAuthorById } from './authors.js';
 
 const CUSTOM_RECIPE_ID = 'custom_signature';
 const MAX_HISTORY_COUNT = 50;
+const SLIDER_LOW_THRESHOLD = 40;
+const SLIDER_HIGH_THRESHOLD = 60;
 
 const ONBOARDING_STEPS = [
   {
@@ -38,6 +40,7 @@ const ONBOARDING_STEPS = [
 // 상태 초기화
 // ─────────────────────────────────────────────
 let state = loadState();
+// 최근에 실행한 문체 지문 분석 결과(반영 전 임시 보관)
 let latestFingerprint = null;
 let onboardingStep = 0;
 
@@ -121,6 +124,12 @@ function parseKeywords(raw) {
     .map(word => word.trim())
     .filter(Boolean)
     .slice(0, 8);
+}
+
+function trimHistoryToMaxSize(list, maxSize) {
+  if (!Array.isArray(list)) return [];
+  if (list.length <= maxSize) return list;
+  return list.slice(list.length - maxSize);
 }
 
 function createDefaultCustomStyle() {
@@ -211,8 +220,7 @@ function recordWritingHistory(text) {
   const last = history[history.length - 1];
   if (last && last.text === normalized) return;
   history.push({ text: normalized, date: todayString() });
-  if (history.length > MAX_HISTORY_COUNT) history.splice(0, history.length - MAX_HISTORY_COUNT);
-  state.writingHistory = history;
+  state.writingHistory = trimHistoryToMaxSize(history, MAX_HISTORY_COUNT);
 }
 
 function collectUserTextsForFingerprint() {
@@ -273,19 +281,19 @@ function updatePortfolio() {
     return;
   }
   const sorted = [...state.portfolio].reverse();
-  sorted.forEach(item => {
+  sorted.forEach(portfolioItem => {
     const el = document.createElement('div');
     el.className = 'portfolio-item';
-    const recipeLabel = item.recipeName ? `<span class="portfolio-recipe">${escapeHtml(item.recipeName)}</span>` : '';
+    const recipeLabel = portfolioItem.recipeName ? `<span class="portfolio-recipe">${escapeHtml(portfolioItem.recipeName)}</span>` : '';
     el.innerHTML = `
       <div class="portfolio-header">
-        <span class="portfolio-grade">${item.gradeEmoji} ${item.gradeName}</span>
-        <span class="portfolio-score">맛있음 ${item.score}점</span>
+        <span class="portfolio-grade">${portfolioItem.gradeEmoji} ${portfolioItem.gradeName}</span>
+        <span class="portfolio-score">맛있음 ${portfolioItem.score}점</span>
         ${recipeLabel}
-        <span class="portfolio-date">${item.date}</span>
+        <span class="portfolio-date">${portfolioItem.date}</span>
       </div>
-      <p class="portfolio-text">${escapeHtml(item.text.slice(0, 100))}${item.text.length > 100 ? '...' : ''}</p>
-      <div class="portfolio-meta">수정 횟수: ${item.revisionCount}회 | 글자 수: ${item.charCount}자</div>
+      <p class="portfolio-text">${escapeHtml(portfolioItem.text.slice(0, 100))}${portfolioItem.text.length > 100 ? '...' : ''}</p>
+      <div class="portfolio-meta">수정 횟수: ${portfolioItem.revisionCount}회 | 글자 수: ${portfolioItem.charCount}자</div>
     `;
     portfolioList.appendChild(el);
   });
@@ -636,10 +644,26 @@ function buildVocabularyText(richness, keywords = []) {
 }
 
 function buildSliderPreviewText(values) {
-  const sentenceLead = values.length < 40 ? '짧게 톡, 또박또박' : values.length > 60 ? '천천히 길게, 흐르듯' : '리듬 있게 고르게';
-  const mood = values.energy < 40 ? '차분한 숨결로' : values.energy > 60 ? '활기찬 발걸음으로' : '편안한 온도로';
-  const humor = values.humor < 40 ? '진지한 마음을 담아' : values.humor > 60 ? '살짝 웃음기를 섞어' : '따뜻한 미소를 얹어';
-  const richness = values.richness < 40 ? '담백한 단어로' : values.richness > 60 ? '색깔 있는 표현으로' : '친근한 말들로';
+  const sentenceLead = values.length < SLIDER_LOW_THRESHOLD
+    ? '짧게 톡, 또박또박'
+    : values.length > SLIDER_HIGH_THRESHOLD
+      ? '천천히 길게, 흐르듯'
+      : '리듬 있게 고르게';
+  const mood = values.energy < SLIDER_LOW_THRESHOLD
+    ? '차분한 숨결로'
+    : values.energy > SLIDER_HIGH_THRESHOLD
+      ? '활기찬 발걸음으로'
+      : '편안한 온도로';
+  const humor = values.humor < SLIDER_LOW_THRESHOLD
+    ? '진지한 마음을 담아'
+    : values.humor > SLIDER_HIGH_THRESHOLD
+      ? '살짝 웃음기를 섞어'
+      : '따뜻한 미소를 얹어';
+  const richness = values.richness < SLIDER_LOW_THRESHOLD
+    ? '담백한 단어로'
+    : values.richness > SLIDER_HIGH_THRESHOLD
+      ? '색깔 있는 표현으로'
+      : '친근한 말들로';
   return `미리보기: ${sentenceLead}, ${mood} ${humor} ${richness} 오늘의 이야기를 구워봐요.`;
 }
 
