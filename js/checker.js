@@ -321,13 +321,10 @@ function checkAwkwardSentences(text) {
   if (nominalizationMatches.length >= 2) {
     const firstMatch = nominalizationMatches[0];
     const first = firstMatch[0];
-    const noun = firstMatch[1];
-    const ending = first.match(/하(?:였다|했다|였습니다|했습니다)$/u)?.[0] || '했다';
-    const verbSuggestion = `${noun}${ending}`;
     addSuggestion(
       first,
       `"~을/를 하다" 표현이 ${nominalizationMatches.length}번 보여 번역투처럼 느껴질 수 있어요.`,
-      `가능하면 동사형(예: "${verbSuggestion}")으로 바꿔보세요.`,
+      '문맥이 허용한다면 동사 하나로 다듬어 더 간결하게 써보세요.',
     );
   }
 
@@ -352,7 +349,7 @@ function checkAwkwardSentences(text) {
       addSuggestion(
         rule.phrase,
         `"${rule.phrase}"는 상황에 따라 조금 딱딱하게 들릴 수 있어요.`,
-        `"${rule.replacement}"처럼 더 가벼운 표현도 잘 어울려요.`,
+        `문맥에 맞다면 "${rule.replacement}"처럼 더 가벼운 표현도 잘 어울려요.`,
       );
     }
   });
@@ -393,6 +390,7 @@ function calcScore(issues, stats, revisionCount, grammarSuggestions = []) {
   score += Math.min(revisionCount * 5, 30);
 
   // 비문/어색한 문장 제안은 아주 약하게만 반영 (제안 1개당 -1점, 최대 -4점)
+  // 초등학생/일반 사용자도 부담 없이 쓰도록 감점 상한을 낮게 유지
   score -= Math.min(grammarSuggestions.length, 4);
 
   return Math.max(0, Math.min(100, score));
