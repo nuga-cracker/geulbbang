@@ -8,10 +8,13 @@ import { addExp, calcExpGain, checkBadges, getBreadGrade, expForNextLevel, getDa
 import { loadState, saveState, resetState, todayString } from './storage.js';
 import { AUTHORS, getAuthorById } from './authors.js';
 
-const CUSTOM_RECIPE_ID = 'custom_signature';
+const CUSTOM_SIGNATURE_ID = 'custom_signature';
 const MAX_HISTORY_COUNT = 50;
 const SLIDER_LOW_THRESHOLD = 40;
 const SLIDER_HIGH_THRESHOLD = 60;
+const SLIDER_TERCILE_LOW = 33;
+const SLIDER_TERCILE_HIGH = 67;
+const NO_ANALYSIS_TEXT_MESSAGE = '아직 분석할 글이 없어요. 먼저 글을 굽고 다시 눌러봐요! ✍️';
 
 const ONBOARDING_STEPS = [
   {
@@ -134,7 +137,7 @@ function trimHistoryToMaxSize(list, maxSize) {
 
 function createDefaultCustomStyle() {
   return {
-    id: CUSTOM_RECIPE_ID,
+    id: CUSTOM_SIGNATURE_ID,
     name: '🏆 나만의 시그니처 빵',
     baseAuthor: '나의 글습관 기반',
     copyrightStatus: 'original',
@@ -180,7 +183,7 @@ function ensureStateShape() {
   if (!Array.isArray(state.badges)) state.badges = [];
   if (!Array.isArray(state.portfolio)) state.portfolio = [];
   if (!Array.isArray(state.writingHistory)) state.writingHistory = [];
-  if (!state.recipeUsage || typeof state.recipeUsage !== 'object') state.recipeUsage = {};
+  if (!state.recipeUsage || typeof state.recipeUsage !== 'object' || Array.isArray(state.recipeUsage)) state.recipeUsage = {};
 
   const base = createDefaultCustomStyle();
   if (!state.customStyle || typeof state.customStyle !== 'object') {
@@ -207,7 +210,7 @@ function ensureStateShape() {
 }
 
 function getRecipeProfile(recipeId) {
-  if (recipeId === CUSTOM_RECIPE_ID) {
+  if (recipeId === CUSTOM_SIGNATURE_ID) {
     return state.customStyle || createDefaultCustomStyle();
   }
   return getAuthorById(recipeId);
@@ -318,13 +321,13 @@ function renderRecipeCards() {
   }, state.selectedRecipe === 'free');
   recipeCardsEl.appendChild(freeCard);
 
-  const customRecipe = getRecipeProfile(CUSTOM_RECIPE_ID);
+  const customRecipe = getRecipeProfile(CUSTOM_SIGNATURE_ID);
   const customMood = customRecipe.ready
     ? customRecipe.mood
     : '🌱 설문·분석·슬라이더로 내 문체를 완성해요';
   const customCard = createRecipeCard(
-    { id: CUSTOM_RECIPE_ID, name: '🏆 나만의 시그니처 빵', mood: customMood },
-    state.selectedRecipe === CUSTOM_RECIPE_ID,
+    { id: CUSTOM_SIGNATURE_ID, name: '🏆 나만의 시그니처 빵', mood: customMood },
+    state.selectedRecipe === CUSTOM_SIGNATURE_ID,
   );
   recipeCardsEl.appendChild(customCard);
 
@@ -626,8 +629,8 @@ function initTabs() {
 // 나만의 문체
 // ─────────────────────────────────────────────
 function buildSentenceStyleText(length) {
-  if (length < 33) return '짧고 톡톡 끊어 읽히는 문장';
-  if (length < 67) return '길이감이 균형 잡힌 문장';
+  if (length < SLIDER_TERCILE_LOW) return '짧고 톡톡 끊어 읽히는 문장';
+  if (length < SLIDER_TERCILE_HIGH) return '길이감이 균형 잡힌 문장';
   return '길고 물 흐르듯 이어지는 문장';
 }
 
@@ -757,8 +760,8 @@ function handleCustomAnalyze() {
   const texts = collectUserTextsForFingerprint();
   if (texts.length === 0) {
     latestFingerprint = null;
-    styleAnalysisResultEl.textContent = '아직 분석할 글이 없어요. 먼저 글을 굽고 다시 눌러봐요! ✍️';
-    showToast('먼저 글을 한 편 구워보면 분석할 수 있어요!', 'warning');
+    styleAnalysisResultEl.textContent = NO_ANALYSIS_TEXT_MESSAGE;
+    showToast(NO_ANALYSIS_TEXT_MESSAGE, 'warning');
     return;
   }
   latestFingerprint = analyzeWritingFingerprint(texts);

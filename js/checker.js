@@ -105,7 +105,7 @@ function tokenizeWords(text) {
     .filter(w => w.length > 0);
 }
 
-const STYLE_STOPWORDS = new Set([
+const WRITING_ANALYSIS_STOPWORDS = new Set([
   '그리고', '그래서', '하지만', '그러나', '또', '또한', '그런데', '저는', '나는', '내가', '제가', '우리', '너무',
   '정말', '진짜', '아주', '매우', '이다', '있다', '없다', '했다', '한다', '한다면', '같다', '것', '수', '이', '그', '저',
   '오늘', '요즘', '에서', '에게', '으로', '까지', '부터', '하면', '하며', '하고', '하는', '했다가',
@@ -374,7 +374,7 @@ export function analyzeWritingFingerprint(texts = []) {
   words.forEach(word => {
     const cleaned = word.trim().toLowerCase();
     if (cleaned.length < 2) return;
-    if (STYLE_STOPWORDS.has(cleaned)) return;
+    if (WRITING_ANALYSIS_STOPWORDS.has(cleaned)) return;
     freq[cleaned] = (freq[cleaned] || 0) + 1;
   });
   const topWords = Object.entries(freq)
