@@ -15,6 +15,7 @@ const SLIDER_HIGH_THRESHOLD = 60;
 const SLIDER_RANGE_FIRST_THIRD_MAX = 32;
 const SLIDER_RANGE_SECOND_THIRD_MAX = 66;
 const MAX_TOP_SUGGESTIONS = 3;
+const TOP_SUGGESTIONS_TITLE_PREFIX = '가장 먼저 보면 좋은 제안';
 const NO_ANALYSIS_TEXT_MESSAGE = '아직 분석할 글이 없어요. 먼저 글을 굽고 다시 눌러봐요! ✍️';
 const ANALYSIS_IDLE_MESSAGE = '아직 분석 전이에요. 글을 굽고 나서 눌러보세요! 🍞';
 
@@ -138,6 +139,32 @@ function trimHistoryToMaxSize(list, maxSize) {
   if (!Array.isArray(list)) return [];
   if (list.length <= maxSize) return list;
   return list.slice(list.length - maxSize);
+}
+
+function buildTopSuggestions(issueMessages = [], grammarMessages = [], maxCount = MAX_TOP_SUGGESTIONS) {
+  const merged = [];
+  let issueIndex = 0;
+  let grammarIndex = 0;
+
+  if (issueMessages.length > 0 && merged.length < maxCount) {
+    merged.push(issueMessages[issueIndex]);
+    issueIndex += 1;
+  }
+  if (grammarMessages.length > 0 && merged.length < maxCount) {
+    merged.push(grammarMessages[grammarIndex]);
+    grammarIndex += 1;
+  }
+  while (merged.length < maxCount && (issueIndex < issueMessages.length || grammarIndex < grammarMessages.length)) {
+    if (issueIndex < issueMessages.length && merged.length < maxCount) {
+      merged.push(issueMessages[issueIndex]);
+      issueIndex += 1;
+    }
+    if (grammarIndex < grammarMessages.length && merged.length < maxCount) {
+      merged.push(grammarMessages[grammarIndex]);
+      grammarIndex += 1;
+    }
+  }
+  return merged;
 }
 
 function createDefaultCustomStyle() {
@@ -424,13 +451,8 @@ function renderFeedback(result) {
   const scoreColor = score >= 80 ? '#27ae60' : score >= 60 ? '#f39c12' : '#e74c3c';
   const issueSummaries = issues.map(issue => issue.message);
   const grammarSummaries = grammarSuggestions.map(item => item.suggestion);
-  const topSuggestions = [];
-  if (issueSummaries.length > 0) topSuggestions.push(issueSummaries.shift());
-  if (grammarSummaries.length > 0) topSuggestions.push(grammarSummaries.shift());
-  while (topSuggestions.length < MAX_TOP_SUGGESTIONS && (issueSummaries.length > 0 || grammarSummaries.length > 0)) {
-    if (issueSummaries.length > 0) topSuggestions.push(issueSummaries.shift());
-    if (topSuggestions.length < MAX_TOP_SUGGESTIONS && grammarSummaries.length > 0) topSuggestions.push(grammarSummaries.shift());
-  }
+  const topSuggestions = buildTopSuggestions(issueSummaries, grammarSummaries);
+  const topSuggestionTitle = `${TOP_SUGGESTIONS_TITLE_PREFIX} ${topSuggestions.length}개`;
   const topSuggestionsHtml = topSuggestions.length > 0
     ? `
       <ul class="feedback-top-list">
@@ -449,7 +471,7 @@ function renderFeedback(result) {
         오늘의 맛있음 점수: <strong>${score}점</strong>
       </div>
       <div class="feedback-top">
-        <p class="feedback-top-title">가장 먼저 보면 좋은 제안 ${topSuggestions.length}개</p>
+        <p class="feedback-top-title">${topSuggestionTitle}</p>
         ${topSuggestionsHtml}
       </div>
     </div>
