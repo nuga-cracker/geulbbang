@@ -40,6 +40,7 @@
   --color-info: #0d99ff;
   --color-info-bg: #e8f5ff;
   --color-exp: #a259ff;
+  --color-focus-ring: rgba(13,153,255,0.12);
 
   /* 형태 */
   --radius-sm: 6px;
@@ -407,7 +408,7 @@ body {
 .writing-area:focus {
   border-color: var(--color-primary);
   background: white;
-  box-shadow: 0 0 0 3px rgba(13,153,255,0.10);
+  box-shadow: 0 0 0 3px var(--color-focus-ring);
 }
 
 .writing-area::placeholder {
@@ -631,6 +632,15 @@ body {
   margin-top: var(--space-md);
   padding-top: var(--space-md);
   border-top: 1px solid var(--color-border);
+}
+
+/* ─────────────────────────────────────────────
+   유틸리티
+   ───────────────────────────────────────────── */
+.helper-text {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-light);
+  margin-bottom: var(--space-sm);
 }
 
 /* ─────────────────────────────────────────────
@@ -1030,7 +1040,7 @@ body {
 .custom-form-grid select:focus,
 .custom-form-grid input:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(13,153,255,0.10);
+  box-shadow: 0 0 0 3px var(--color-focus-ring);
 }
 
 .analysis-result {
@@ -1084,13 +1094,19 @@ body {
 .onboarding-modal {
   position: fixed;
   inset: 0;
-  background: rgba(10, 10, 20, 0.55);
-  backdrop-filter: blur(4px);
+  background: rgba(10, 10, 20, 0.70);
   z-index: 10000;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: var(--space-md);
+}
+
+@supports (backdrop-filter: blur(4px)) {
+  .onboarding-modal {
+    background: rgba(10, 10, 20, 0.55);
+    backdrop-filter: blur(4px);
+  }
 }
 
 .onboarding-content {
