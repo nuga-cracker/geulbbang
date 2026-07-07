@@ -12,9 +12,10 @@ const CUSTOM_SIGNATURE_ID = 'custom_signature';
 const MAX_HISTORY_COUNT = 50;
 const SLIDER_LOW_THRESHOLD = 40;
 const SLIDER_HIGH_THRESHOLD = 60;
-const SLIDER_TERCILE_LOW = 33;
-const SLIDER_TERCILE_HIGH = 67;
+const SLIDER_RANGE_FIRST_THIRD_MAX = 32;
+const SLIDER_RANGE_SECOND_THIRD_MAX = 66;
 const NO_ANALYSIS_TEXT_MESSAGE = '아직 분석할 글이 없어요. 먼저 글을 굽고 다시 눌러봐요! ✍️';
+const ANALYSIS_IDLE_MESSAGE = '아직 분석 전이에요. 글을 굽고 나서 눌러보세요! 🍞';
 
 const ONBOARDING_STEPS = [
   {
@@ -629,8 +630,8 @@ function initTabs() {
 // 나만의 문체
 // ─────────────────────────────────────────────
 function buildSentenceStyleText(length) {
-  if (length < SLIDER_TERCILE_LOW) return '짧고 톡톡 끊어 읽히는 문장';
-  if (length < SLIDER_TERCILE_HIGH) return '길이감이 균형 잡힌 문장';
+  if (length <= SLIDER_RANGE_FIRST_THIRD_MAX) return '짧고 톡톡 끊어 읽히는 문장';
+  if (length <= SLIDER_RANGE_SECOND_THIRD_MAX) return '길이감이 균형 잡힌 문장';
   return '길고 물 흐르듯 이어지는 문장';
 }
 
@@ -672,7 +673,7 @@ function buildSliderPreviewText(values) {
 
 function getSliderValues() {
   if (!sliderLength || !sliderRichness || !sliderEnergy || !sliderHumor) {
-    showToast('슬라이더가 아직 준비되지 않았어요. 새로고침 후 다시 시도해 주세요.', 'warning');
+    showToast('슬라이더 초기화 중 문제가 발생했어요. 페이지를 새로고침해 주세요.', 'warning');
     return {
       length: 50,
       richness: 50,
@@ -853,7 +854,7 @@ function updateCustomStylePanel() {
   if (custom.fingerprint && custom.fingerprint.applied) {
     styleAnalysisResultEl.textContent = `${renderFingerprintSummary(custom.fingerprint)}\n✅ 이 분석이 시그니처 빵에 반영돼 있어요.`;
   } else {
-    styleAnalysisResultEl.textContent = '아직 분석 전이에요. 글을 굽고 나서 눌러보세요! 🍞';
+    styleAnalysisResultEl.textContent = ANALYSIS_IDLE_MESSAGE;
   }
 }
 
