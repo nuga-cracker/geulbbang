@@ -242,6 +242,10 @@ function checkStyleConsistency(text) {
 function checkAwkwardSentences(text) {
   const suggestions = [];
   const dedupe = new Set();
+  const MAX_PARTICLE_STEM_LENGTH = 20;
+  const MIN_NOMINALIZATION_REPEAT = 2;
+  const MAX_PROBLEM_PATTERN_SPAN = 70;
+  const MIN_PROBLEM_PATTERN_REPEAT = 2;
 
   const addSuggestion = (excerpt, message, suggestion) => {
     const safeExcerpt = String(excerpt || '').trim();
@@ -252,7 +256,10 @@ function checkAwkwardSentences(text) {
     suggestions.push({ excerpt: safeExcerpt, message, suggestion });
   };
 
-  const mixedParticlePattern = /([가-힣]{1,12})(은는|는은|이가|가이|을를|를을)(?=[^가-힣]|$)/g;
+  const mixedParticlePattern = new RegExp(
+    `([가-힣]{1,${MAX_PARTICLE_STEM_LENGTH}})(은는|는은|이가|가이|을를|를을)(?=[^가-힣]|$)`,
+    'g',
+  );
   let particleMatch;
   while ((particleMatch = mixedParticlePattern.exec(text)) !== null) {
     const stem = particleMatch[1];
@@ -264,7 +271,10 @@ function checkAwkwardSentences(text) {
     );
   }
 
-  const repeatedParticlePattern = /([가-힣]{1,12})(은|는|이|가|을|를|에)\2(?=[^가-힣]|$)/g;
+  const repeatedParticlePattern = new RegExp(
+    `([가-힣]{1,${MAX_PARTICLE_STEM_LENGTH}})(은|는|이|가|을|를|에)\\2(?=[^가-힣]|$)`,
+    'g',
+  );
   let repeatedParticleMatch;
   while ((repeatedParticleMatch = repeatedParticlePattern.exec(text)) !== null) {
     const stem = repeatedParticleMatch[1];
@@ -318,7 +328,7 @@ function checkAwkwardSentences(text) {
 
   const nominalizationPattern = /([가-힣]{2,20})(을|를)\s+하(?:였다|했다|였습니다|했습니다)/g;
   const nominalizationMatches = [...text.matchAll(nominalizationPattern)];
-  if (nominalizationMatches.length >= 2) {
+  if (nominalizationMatches.length >= MIN_NOMINALIZATION_REPEAT) {
     const firstMatch = nominalizationMatches[0];
     const first = firstMatch[0];
     addSuggestion(
@@ -328,9 +338,12 @@ function checkAwkwardSentences(text) {
     );
   }
 
-  const problemPattern = /문제는[^.?!\n]{0,70}라는\s+것이다/g;
+  const problemPattern = new RegExp(
+    `문제는[^.?!\\n]{0,${MAX_PROBLEM_PATTERN_SPAN}}라는\\s+것이다`,
+    'g',
+  );
   const problemMatches = text.match(problemPattern) || [];
-  if (problemMatches.length >= 2) {
+  if (problemMatches.length >= MIN_PROBLEM_PATTERN_REPEAT) {
     addSuggestion(
       problemMatches[0],
       '"문제는 ~라는 것이다" 구조가 반복되어 리듬이 단조로울 수 있어요.',
