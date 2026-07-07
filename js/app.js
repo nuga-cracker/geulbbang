@@ -22,6 +22,8 @@ let onboardingStepIndex = 0;
 const DEFAULT_RECIPE_ENCOURAGEMENT = '네 글의 결을 살려서 다듬어봐요!';
 const DEFAULT_RECIPE_GUIDELINE = '한 줄씩 호흡을 맞추며 다듬어봐요.';
 const MAX_STYLE_ANALYSIS_SAMPLES = 25;
+const SIGNATURE_SLIDER_LOW = 35;
+const SIGNATURE_SLIDER_HIGH = 65;
 
 const ONBOARDING_STEPS = [
   {
@@ -325,10 +327,10 @@ function getStyleAnalysisTexts() {
 
 function renderSignaturePreview() {
   const sliderLabels = {
-    sentenceLength: state.customStyle.sliders.sentenceLength < 35 ? '짧게' : state.customStyle.sliders.sentenceLength > 65 ? '길게' : '적당히',
-    vividness: state.customStyle.sliders.vividness < 35 ? '담백하게' : state.customStyle.sliders.vividness > 65 ? '화사하게' : '은은하게',
-    energy: state.customStyle.sliders.energy < 35 ? '차분하게' : state.customStyle.sliders.energy > 65 ? '활발하게' : '부드럽게',
-    humor: state.customStyle.sliders.humor < 35 ? '진지하게' : state.customStyle.sliders.humor > 65 ? '유쾌하게' : '살짝 미소 짓게',
+    sentenceLength: state.customStyle.sliders.sentenceLength < SIGNATURE_SLIDER_LOW ? '짧게' : state.customStyle.sliders.sentenceLength > SIGNATURE_SLIDER_HIGH ? '길게' : '적당히',
+    vividness: state.customStyle.sliders.vividness < SIGNATURE_SLIDER_LOW ? '담백하게' : state.customStyle.sliders.vividness > SIGNATURE_SLIDER_HIGH ? '화사하게' : '은은하게',
+    energy: state.customStyle.sliders.energy < SIGNATURE_SLIDER_LOW ? '차분하게' : state.customStyle.sliders.energy > SIGNATURE_SLIDER_HIGH ? '활발하게' : '부드럽게',
+    humor: state.customStyle.sliders.humor < SIGNATURE_SLIDER_LOW ? '진지하게' : state.customStyle.sliders.humor > SIGNATURE_SLIDER_HIGH ? '유쾌하게' : '살짝 미소 짓게',
   };
 
   Object.entries(sliderValueEls).forEach(([key, el]) => {
@@ -560,8 +562,8 @@ function renderFeedback(result) {
   }
 
   if (selectedAuthor) {
-    const encouragements = selectedAuthor.encouragements || [];
-    const guidelines = selectedAuthor.editingGuidelines || [];
+    const encouragements = Array.isArray(selectedAuthor.encouragements) ? selectedAuthor.encouragements : [];
+    const guidelines = Array.isArray(selectedAuthor.editingGuidelines) ? selectedAuthor.editingGuidelines : [];
     const encouragement = encouragements[Math.floor(Math.random() * encouragements.length)] || DEFAULT_RECIPE_ENCOURAGEMENT;
     const guideline = guidelines[Math.floor(Math.random() * guidelines.length)] || DEFAULT_RECIPE_GUIDELINE;
     html += `

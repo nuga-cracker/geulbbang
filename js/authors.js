@@ -224,8 +224,11 @@ const SPEECH_LABELS = {
   diary: '📖 일기처럼 속마음을 적는',
 };
 
+// 24자: 글빵 분석에서 '짧지도 길지도 않은 보통 호흡'으로 보는 기준선
 const AVERAGE_SENTENCE_LENGTH_BASELINE = 24;
+// ±15: 실제 내 글 분석이 슬라이더 취향을 완전히 덮지 않도록 주는 최대 보정 폭
 const MAX_ANALYSIS_ADJUSTMENT = 15;
+// ±18: 설문에서 짧게/길게를 골랐을 때 체감이 분명하도록 주는 기본 이동값
 const SURVEY_SENTENCE_SHIFT = 18;
 
 function clampSlider(value, fallback) {
