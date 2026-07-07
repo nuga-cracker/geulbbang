@@ -586,7 +586,12 @@ body {
 .toast-warning  { background: var(--color-warning); }
 .toast-info     { background: var(--color-info); }
 .toast-exp      { background: var(--color-exp); }
-.toast-levelup  { background: var(--color-primary); font-size: 1rem; padding: 14px 22px; }
+/* 레벨업 토스트는 더 크고 눈에 띄게 표시합니다 */
+.toast-levelup  {
+  background: var(--color-primary);
+  font-size: 1rem;
+  padding: 14px 22px;
+}
 .toast-badge    { background: var(--color-secondary-dark); color: white; }
 
 /* ─────────────────────────────────────────────

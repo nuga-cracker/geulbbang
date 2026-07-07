@@ -59,7 +59,7 @@ export const BADGE_DEFS = [
   },
   {
     id: 'five_revisions',
-    name: '오 번 도전 🏆',
+    name: '다섯 번 도전 🏆',
     description: '한 글을 5번이나 고쳐 썼어요!',
     check: (state, extra) => (extra && extra.revisionCount >= 5),
   },

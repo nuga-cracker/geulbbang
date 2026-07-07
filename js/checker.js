@@ -215,10 +215,10 @@ function checkDoubleNegative(text) {
 /** 어미 일관성 체크 (존댓말/반말 혼용) */
 function checkStyleConsistency(text) {
   const issues = [];
-  // 존댓말 어미
-  const formalMatches = text.match(/습니다|습니까|어요|아요|네요|겠습니다/g) || [];
-  // 반말 어미 (문장 끝에 주로 등장)
-  const informalMatches = text.match(/[다야해봐줘가나]/g) || [];
+  // 존댓말 어미 (문장 끝 패턴)
+  const formalMatches = text.match(/(?:습니다|습니까|어요|아요|네요|겠습니다)[.!?\s]/g) || [];
+  // 반말 어미 — 문장 부호 앞에 오는 대표적인 반말 종결어미
+  const informalMatches = text.match(/(?:했다|한다|이다|갔다|왔다|봤다|먹었다|썼다|있다|없다|좋다|싫다)[.!?\s]/g) || [];
 
   // 둘 다 상당수 존재하면 혼용 의심
   if (formalMatches.length >= 3 && informalMatches.length >= 3) {

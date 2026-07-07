@@ -126,9 +126,13 @@ function checkStreak() {
   const today = todayString();
   if (state.lastVisitDate === today) return; // 오늘 이미 체크
 
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
-  const yStr = yesterday.toISOString().slice(0, 10);
+  // 어제 날짜를 로컬 시간 기준으로 계산 (todayString()과 동일한 방식)
+  const yDate = new Date();
+  yDate.setDate(yDate.getDate() - 1);
+  const y = yDate.getFullYear();
+  const m = String(yDate.getMonth() + 1).padStart(2, '0');
+  const d = String(yDate.getDate()).padStart(2, '0');
+  const yStr = `${y}-${m}-${d}`;
 
   if (state.lastVisitDate === yStr) {
     state.streakDays += 1;
