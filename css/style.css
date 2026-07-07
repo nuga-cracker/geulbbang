@@ -429,10 +429,7 @@ body {
   top: 25px;
   width: 14px;
   height: 8px;
-  border: 2px solid #2e1c08;
-  border-top: 0;
-  border-left: 0;
-  border-right: 0;
+  border-bottom: 2px solid #2e1c08;
   border-radius: 0 0 12px 12px;
   transform: translateX(-50%);
 }
@@ -997,8 +994,7 @@ body {
   .mascot-copy {
     line-height: 1.5;
   }
-  .bread-mascot,
-  .dough-mascot {
+  .bread-mascot {
     width: 46px;
     height: 40px;
   }
