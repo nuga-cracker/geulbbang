@@ -787,6 +787,54 @@ body {
   margin: var(--space-sm) 0;
 }
 
+.feedback-grammar-section {
+  margin-top: var(--space-md);
+  margin-bottom: var(--space-md);
+  padding: var(--space-md);
+  border-radius: var(--radius);
+  background: #fff7dd;
+  border: 1px solid #f0d79a;
+}
+
+.feedback-grammar-title {
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  margin-bottom: var(--space-sm);
+}
+
+.feedback-grammar-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.feedback-grammar-item {
+  background: #fffef8;
+  border-radius: var(--radius);
+  border: 1px solid #f2e2bd;
+  padding: 10px var(--space-md);
+}
+
+.feedback-grammar-source {
+  font-weight: 700;
+  margin-bottom: 2px;
+  color: var(--color-text);
+}
+
+.feedback-grammar-message {
+  font-size: var(--font-size-sm);
+  margin-bottom: 3px;
+  color: var(--color-text);
+}
+
+.feedback-grammar-suggestion {
+  font-size: var(--font-size-sm);
+  color: #8a5a08;
+  font-weight: 600;
+}
+
 .feedback-actions {
   text-align: center;
   margin-top: var(--space-md);

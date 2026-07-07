@@ -394,7 +394,7 @@ function checkStreak() {
 // 피드백 렌더링
 // ─────────────────────────────────────────────
 function renderFeedback(result) {
-  const { issues, stats, score, praise } = result;
+  const { issues, grammarSuggestions = [], stats, score, praise } = result;
   const selectedProfile = getRecipeProfile(state.selectedRecipe);
   const scoreColor = score >= 80 ? '#27ae60' : score >= 60 ? '#f39c12' : '#e74c3c';
 
@@ -430,6 +430,27 @@ function renderFeedback(result) {
       `;
     });
     html += '</ul><p class="feedback-encourage">✏️ 고쳐쓰기를 해보세요! 고칠수록 경험치가 더 많이 올라요! 🎮</p>';
+  }
+
+  if (grammarSuggestions.length > 0) {
+    html += `
+      <div class="feedback-grammar-section">
+        <div class="feedback-grammar-title">🧁 비문 다듬기 (${grammarSuggestions.length}가지 제안)</div>
+        <ul class="feedback-grammar-list">
+    `;
+    grammarSuggestions.forEach(item => {
+      html += `
+        <li class="feedback-grammar-item">
+          <p class="feedback-grammar-source">“${escapeHtml(item.excerpt)}”</p>
+          <p class="feedback-grammar-message">${escapeHtml(item.message)}</p>
+          <p class="feedback-grammar-suggestion">→ ${escapeHtml(item.suggestion)}</p>
+        </li>
+      `;
+    });
+    html += `
+        </ul>
+      </div>
+    `;
   }
 
   if (selectedProfile) {
