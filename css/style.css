@@ -508,6 +508,11 @@ body {
   height: 4px;
 }
 
+.bread-mascot.mini .mascot-cheek.left,
+.dough-mascot.mini .mascot-cheek.left { left: 7px; }
+.bread-mascot.mini .mascot-cheek.right,
+.dough-mascot.mini .mascot-cheek.right { right: 7px; }
+
 .writing-wrapper {
   position: relative;
 }
