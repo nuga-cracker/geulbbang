@@ -422,10 +422,15 @@ function renderFeedback(result) {
   const { issues, grammarSuggestions = [], stats, score, praise } = result;
   const selectedProfile = getRecipeProfile(state.selectedRecipe);
   const scoreColor = score >= 80 ? '#27ae60' : score >= 60 ? '#f39c12' : '#e74c3c';
-  const topSuggestions = [
-    ...issues.map(issue => issue.message),
-    ...grammarSuggestions.map(item => item.suggestion),
-  ].slice(0, MAX_TOP_SUGGESTIONS);
+  const issueSummaries = issues.map(issue => issue.message);
+  const grammarSummaries = grammarSuggestions.map(item => item.suggestion);
+  const topSuggestions = [];
+  if (issueSummaries.length > 0) topSuggestions.push(issueSummaries.shift());
+  if (grammarSummaries.length > 0) topSuggestions.push(grammarSummaries.shift());
+  while (topSuggestions.length < MAX_TOP_SUGGESTIONS && (issueSummaries.length > 0 || grammarSummaries.length > 0)) {
+    if (issueSummaries.length > 0) topSuggestions.push(issueSummaries.shift());
+    if (topSuggestions.length < MAX_TOP_SUGGESTIONS && grammarSummaries.length > 0) topSuggestions.push(grammarSummaries.shift());
+  }
   const topSuggestionsHtml = topSuggestions.length > 0
     ? `
       <ul class="feedback-top-list">
