@@ -25,6 +25,17 @@ const MAX_STYLE_ANALYSIS_SAMPLES = 25;
 const SIGNATURE_SLIDER_LOW = 35;
 const SIGNATURE_SLIDER_HIGH = 65;
 
+function getSliderLabel(value, lowLabel, midLabel, highLabel) {
+  if (value < SIGNATURE_SLIDER_LOW) return lowLabel;
+  if (value > SIGNATURE_SLIDER_HIGH) return highLabel;
+  return midLabel;
+}
+
+function selectRandom(items, fallback) {
+  if (!Array.isArray(items) || items.length === 0) return fallback;
+  return items[Math.floor(Math.random() * items.length)] || fallback;
+}
+
 const ONBOARDING_STEPS = [
   {
     title: '🌾 글빵에 온 걸 환영해요!',
@@ -327,10 +338,10 @@ function getStyleAnalysisTexts() {
 
 function renderSignaturePreview() {
   const sliderLabels = {
-    sentenceLength: state.customStyle.sliders.sentenceLength < SIGNATURE_SLIDER_LOW ? '짧게' : state.customStyle.sliders.sentenceLength > SIGNATURE_SLIDER_HIGH ? '길게' : '적당히',
-    vividness: state.customStyle.sliders.vividness < SIGNATURE_SLIDER_LOW ? '담백하게' : state.customStyle.sliders.vividness > SIGNATURE_SLIDER_HIGH ? '화사하게' : '은은하게',
-    energy: state.customStyle.sliders.energy < SIGNATURE_SLIDER_LOW ? '차분하게' : state.customStyle.sliders.energy > SIGNATURE_SLIDER_HIGH ? '활발하게' : '부드럽게',
-    humor: state.customStyle.sliders.humor < SIGNATURE_SLIDER_LOW ? '진지하게' : state.customStyle.sliders.humor > SIGNATURE_SLIDER_HIGH ? '유쾌하게' : '살짝 미소 짓게',
+    sentenceLength: getSliderLabel(state.customStyle.sliders.sentenceLength, '짧게', '적당히', '길게'),
+    vividness: getSliderLabel(state.customStyle.sliders.vividness, '담백하게', '은은하게', '화사하게'),
+    energy: getSliderLabel(state.customStyle.sliders.energy, '차분하게', '부드럽게', '활발하게'),
+    humor: getSliderLabel(state.customStyle.sliders.humor, '진지하게', '살짝 미소 짓게', '유쾌하게'),
   };
 
   Object.entries(sliderValueEls).forEach(([key, el]) => {
@@ -509,7 +520,8 @@ function handleSignatureSave() {
 function recordBakeHistory(text) {
   if (!text) return;
   state.bakeHistory = Array.isArray(state.bakeHistory) ? state.bakeHistory : [];
-  if (state.bakeHistory[state.bakeHistory.length - 1] !== text) {
+  const hasHistory = state.bakeHistory.length > 0;
+  if (!hasHistory || state.bakeHistory[state.bakeHistory.length - 1] !== text) {
     state.bakeHistory.push(text);
   }
   if (state.bakeHistory.length > MAX_STYLE_ANALYSIS_SAMPLES) {
@@ -564,8 +576,8 @@ function renderFeedback(result) {
   if (selectedAuthor) {
     const encouragements = Array.isArray(selectedAuthor.encouragements) ? selectedAuthor.encouragements : [];
     const guidelines = Array.isArray(selectedAuthor.editingGuidelines) ? selectedAuthor.editingGuidelines : [];
-    const encouragement = encouragements[Math.floor(Math.random() * encouragements.length)] || DEFAULT_RECIPE_ENCOURAGEMENT;
-    const guideline = guidelines[Math.floor(Math.random() * guidelines.length)] || DEFAULT_RECIPE_GUIDELINE;
+    const encouragement = selectRandom(encouragements, DEFAULT_RECIPE_ENCOURAGEMENT);
+    const guideline = selectRandom(guidelines, DEFAULT_RECIPE_GUIDELINE);
     html += `
       <div class="recipe-feedback-section">
         <div class="recipe-feedback-title">🍽️ ${escapeHtml(selectedAuthor.name)} 관점에서 보면…</div>
@@ -785,10 +797,13 @@ function handleOnboardingNext() {
 function handleOnboardingKeydown(event) {
   if (onboardingOverlay.classList.contains('hidden')) return;
   if (event.key === 'Escape') {
+    event.preventDefault();
     closeOnboarding();
   } else if (event.key === 'ArrowRight' || event.key === 'Enter') {
+    event.preventDefault();
     handleOnboardingNext();
   } else if (event.key === 'ArrowLeft') {
+    event.preventDefault();
     handleOnboardingPrev();
   }
 }

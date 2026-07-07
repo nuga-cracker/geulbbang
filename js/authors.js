@@ -230,11 +230,13 @@ const AVERAGE_SENTENCE_LENGTH_BASELINE = 24;
 const MAX_ANALYSIS_ADJUSTMENT = 15;
 // ±18: 설문에서 짧게/길게를 골랐을 때 체감이 분명하도록 주는 기본 이동값
 const SURVEY_SENTENCE_SHIFT = 18;
+const SLIDER_MIN = 0;
+const SLIDER_MAX = 100;
 
 function clampSlider(value, fallback) {
   const num = Number(value);
   if (!Number.isFinite(num)) return fallback;
-  return Math.max(0, Math.min(100, Math.round(num)));
+  return Math.max(SLIDER_MIN, Math.min(SLIDER_MAX, Math.round(num)));
 }
 
 function mergeCustomStyle(customStyle = {}) {
