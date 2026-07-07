@@ -21,6 +21,7 @@
   --color-accent-orange: #ffd166;
 
   /* 텍스트 */
+  --color-text-strong: #2b1607;
   --color-text: #4a2f14;
   --color-text-secondary: #7a5a33;
   --color-text-light: #9a7b52;
@@ -307,7 +308,7 @@ body {
 
 .tab-btn.active {
   background: var(--color-primary);
-  color: white;
+  color: var(--color-text-strong);
   box-shadow: var(--shadow-sm);
 }
 
@@ -458,14 +459,14 @@ body {
 
 .btn-primary {
   background: var(--color-primary);
-  color: var(--color-secondary-dark);
+  color: var(--color-text-strong);
   border-color: var(--color-primary);
   box-shadow: 0 2px 8px rgba(217, 119, 6, 0.24);
 }
 
 .btn-primary:hover {
   background: var(--color-primary-dark);
-  color: white;
+  color: var(--color-text-strong);
   border-color: var(--color-primary-dark);
   box-shadow: 0 4px 12px rgba(146, 64, 14, 0.24);
   transform: translateY(-1px);
@@ -623,7 +624,7 @@ body {
 .feedback-encourage {
   text-align: center;
   font-size: var(--font-size-sm);
-  color: var(--color-primary);
+  color: var(--color-primary-dark);
   font-weight: 500;
   margin: var(--space-sm) 0;
 }
@@ -800,10 +801,11 @@ body {
 
 .toast-success  { background: #1a8a5e; }
 .toast-warning  { background: #b07515; }
-.toast-info     { background: var(--color-primary); }
-.toast-exp      { background: var(--color-secondary); }
+.toast-info     { background: var(--color-primary); color: var(--color-text-strong); }
+.toast-exp      { background: var(--color-secondary); color: var(--color-text-strong); }
 .toast-levelup  {
   background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  color: var(--color-text-strong);
   font-size: var(--font-size-base);
   padding: 12px 22px;
 }
@@ -901,7 +903,7 @@ body {
 .recipe-card.selected {
   background: var(--color-primary);
   border-color: var(--color-primary);
-  color: var(--color-secondary-dark);
+  color: var(--color-text-strong);
   box-shadow: 0 2px 8px rgba(217, 119, 6, 0.24);
 }
 
