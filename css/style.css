@@ -21,6 +21,7 @@
   --color-secondary-subtle: #fff1d6;
   --color-accent-green: #8ea660;
   --color-accent-orange: #ffd166;
+  --color-hover-subtle: #fff8e3;
 
   /* 텍스트 */
   --color-text-strong: #2b1607;
@@ -1249,7 +1250,7 @@ body {
 
 .recipe-toggle-btn:hover {
   border-color: var(--color-border-strong);
-  background: #fff8e3;
+  background: var(--color-hover-subtle);
 }
 
 .recipe-selector-title {
