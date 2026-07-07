@@ -115,7 +115,7 @@ body {
 .header-inner {
   max-width: 960px;
   margin: 0 auto;
-  height: 56px;
+  height: 50px;
   display: flex;
   align-items: center;
   gap: var(--space-md);
@@ -130,7 +130,7 @@ body {
 }
 
 .site-title {
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   font-weight: 700;
   color: var(--color-text);
   letter-spacing: -0.3px;
@@ -157,13 +157,13 @@ body {
   background: var(--color-primary-subtle);
   color: var(--color-primary-dark);
   border-radius: var(--radius-pill);
-  padding: 3px 12px;
+  padding: 2px 10px;
   font-size: var(--font-size-xs);
   font-weight: 700;
 }
 
 .status-grade {
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-xs);
   font-weight: 600;
   color: var(--color-text-secondary);
 }
@@ -175,8 +175,8 @@ body {
 }
 
 .exp-bar-bg {
-  width: 100px;
-  height: 6px;
+  width: 78px;
+  height: 5px;
   background: var(--color-border);
   border-radius: var(--radius-pill);
   overflow: hidden;
@@ -207,7 +207,7 @@ body {
   background: transparent;
   color: var(--color-text-secondary);
   border: 1px solid var(--color-border) !important;
-  padding: 5px 14px !important;
+  padding: 5px 10px !important;
 }
 
 .help-btn:hover {
@@ -372,11 +372,42 @@ body {
   padding: 14px var(--space-md);
 }
 
+.mascot-intro.compact {
+  padding: 10px var(--space-sm);
+  margin-bottom: var(--space-sm);
+}
+
 .mascot-copy {
   font-size: var(--font-size-sm);
   color: #7c4a16;
   font-weight: 600;
 }
+
+.bread-mascot.mini-inline {
+  width: 36px;
+  height: 31px;
+}
+
+.bread-mascot.mini-inline .mascot-eye {
+  top: 12px;
+  width: 5px;
+  height: 5px;
+}
+
+.bread-mascot.mini-inline .mascot-eye.left { left: 11px; }
+.bread-mascot.mini-inline .mascot-eye.right { right: 11px; }
+.bread-mascot.mini-inline .mascot-smile {
+  top: 17px;
+  width: 10px;
+  height: 6px;
+}
+.bread-mascot.mini-inline .mascot-cheek {
+  top: 18px;
+  width: 6px;
+  height: 4px;
+}
+.bread-mascot.mini-inline .mascot-cheek.left { left: 7px; }
+.bread-mascot.mini-inline .mascot-cheek.right { right: 7px; }
 
 .bread-mascot,
 .dough-mascot {
@@ -591,6 +622,12 @@ body {
   text-align: center;
 }
 
+.write-core-note {
+  margin-top: var(--space-sm);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-light);
+}
+
 /* ─────────────────────────────────────────────
    버튼
    ───────────────────────────────────────────── */
@@ -701,6 +738,41 @@ body {
   margin: var(--space-sm) 0;
 }
 
+.feedback-summary {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-sm);
+  margin-bottom: var(--space-sm);
+}
+
+.feedback-top {
+  background: var(--color-bg2);
+  border-radius: var(--radius);
+  padding: 10px var(--space-sm);
+}
+
+.feedback-top-title {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  margin-bottom: var(--space-xs);
+  color: var(--color-text);
+}
+
+.feedback-top-list {
+  margin-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.feedback-top-empty {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-light);
+}
+
 .feedback-stats {
   font-size: var(--font-size-sm);
   color: var(--color-text-light);
@@ -709,6 +781,34 @@ body {
   background: var(--color-bg2);
   border-radius: var(--radius);
   padding: 8px var(--space-md);
+}
+
+.feedback-details {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-bg2);
+  margin-bottom: var(--space-sm);
+}
+
+.feedback-details-summary {
+  cursor: pointer;
+  list-style: none;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-text);
+  padding: 10px var(--space-md);
+}
+
+.feedback-details-summary::-webkit-details-marker {
+  display: none;
+}
+
+.feedback-details[open] .feedback-details-summary {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.feedback-details-content {
+  padding: var(--space-sm) var(--space-md) var(--space-md);
 }
 
 .feedback-no-issues {
@@ -871,6 +971,15 @@ body {
   margin-top: var(--space-md);
   padding-top: var(--space-md);
   border-top: 1px solid var(--color-border);
+}
+
+.feedback-growth {
+  margin-top: var(--space-sm);
+  padding: 8px var(--space-sm);
+  border-radius: var(--radius);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-light);
+  background: var(--color-secondary-subtle);
 }
 
 /* ─────────────────────────────────────────────
@@ -1065,10 +1174,10 @@ body {
    ───────────────────────────────────────────── */
 @media (max-width: 640px) {
   .site-header { padding: 0 var(--space-md); }
-  .header-inner { flex-wrap: wrap; height: auto; padding: 10px 0; gap: var(--space-sm); }
+  .header-inner { flex-wrap: wrap; height: auto; padding: 8px 0; gap: 6px; }
   .status-bar { justify-content: flex-start; flex: none; width: 100%; }
   .header-actions { margin-left: auto; }
-  .exp-bar-bg { width: 70px; }
+  .exp-bar-bg { width: 60px; }
   .card { padding: var(--space-md); }
   .tabs { gap: 2px; }
   .tab-btn { padding: 6px 12px; font-size: var(--font-size-xs); }
@@ -1094,6 +1203,10 @@ body {
   .dough-helper {
     align-items: flex-start;
   }
+  .bake-btn-wrapper .btn {
+    width: 100%;
+    min-height: 44px;
+  }
 }
 
 /* ─────────────────────────────────────────────
@@ -1117,13 +1230,42 @@ body {
 }
 
 .recipe-selector-header {
-  margin-bottom: var(--space-sm);
+  margin-bottom: var(--space-xs);
+}
+
+.recipe-toggle-btn {
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-bg2);
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  text-align: left;
+  padding: 9px 12px;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.recipe-toggle-btn:hover {
+  border-color: var(--color-border-strong);
+  background: #fff8e3;
 }
 
 .recipe-selector-title {
   font-size: var(--font-size-base);
   font-weight: 700;
   color: var(--color-text);
+}
+
+.recipe-selected-now {
+  margin-top: 6px;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-light);
+}
+
+.recipe-selector-content {
+  margin-top: var(--space-sm);
 }
 
 .recipe-cards {
@@ -1181,6 +1323,12 @@ body {
   font-size: var(--font-size-xs);
   color: var(--color-text-light);
   margin-top: 4px;
+}
+
+.signature-style-hint {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-light);
+  margin-top: var(--space-xs);
 }
 
 /* 문체 레시피 피드백 섹션 */
