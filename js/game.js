@@ -117,6 +117,37 @@ export const BADGE_DEFS = [
     description: '오늘의 글감으로 첫 빵을 구웠어요!',
     check: (state) => state.lastDailyDate !== null,
   },
+  // ── 문체 레시피 배지 ──────────────────────────────
+  {
+    id: 'recipe_first',
+    name: '첫 레시피 도전 🎨',
+    description: '처음으로 문체 레시피를 선택해 빵을 구웠어요!',
+    check: (state, extra) => extra && extra.selectedRecipe && extra.selectedRecipe !== 'free',
+  },
+  {
+    id: 'recipe_variety_3',
+    name: '다채로운 제빵사 🎭',
+    description: '3가지 이상의 문체 레시피를 체험했어요!',
+    check: (state) => Object.keys(state.recipeUsage || {}).filter(k => k !== 'free').length >= 3,
+  },
+  {
+    id: 'recipe_all',
+    name: '문체 마스터 🏆',
+    description: '6가지 문체 레시피를 모두 체험했어요!',
+    check: (state) => Object.keys(state.recipeUsage || {}).filter(k => k !== 'free').length >= 6,
+  },
+  {
+    id: 'recipe_confession_3',
+    name: '고백빵 달인 🌫️',
+    description: '부끄러운 고백빵으로 3번 글을 구웠어요!',
+    check: (state) => ((state.recipeUsage || {})['confession'] || 0) >= 3,
+  },
+  {
+    id: 'recipe_diary_5',
+    name: '다정 일기 마스터 🌸',
+    description: '매일 다정 일기빵으로 5번 글을 구웠어요!',
+    check: (state) => ((state.recipeUsage || {})['diary'] || 0) >= 5,
+  },
 ];
 
 // ─────────────────────────────────────────────
