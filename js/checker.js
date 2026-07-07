@@ -84,6 +84,15 @@ const DOUBLE_NEGATIVE_PATTERNS = [
   { pattern: /안\s*하지\s*않|안\s*되지\s*않/g, label: '이중 부정' },
 ];
 
+const COMMON_WORDS_TO_IGNORE = new Set([
+  '이다', '있다', '하다', '되다', '같다', '않다', '없다', '이고', '이나', '이며',
+  '그리고', '그래서', '하지만', '그런데', '그러나', '또한', '또는', '그것', '이것',
+  '저것', '우리', '나는', '내가', '저는', '제가', '에서', '에게', '으로', '까지',
+  '부터', '이랑', '하고', '오늘', '어제', '그냥', '정말', '너무', '진짜', '조금',
+  '많이', '아주', '매우', '같은', '한번', '이번', '요즘', '때문에', '그래도',
+  '있어요', '했어요', '합니다', '합니다', '했다', '한다',
+]);
+
 // ─────────────────────────────────────────────
 // 유틸: 문장 분리
 // ─────────────────────────────────────────────
@@ -140,9 +149,8 @@ function checkDuplicateWords(text, sentences) {
   });
 
   // 빈도 높은 단어(3회 이상, 단 조사·접속어 제외)
-  const IGNORE = new Set(['이다', '있다', '하다', '되다', '같다', '않다', '없다', '이고', '이나', '이며', '그리고', '그래서', '하지만', '그런데', '그러나', '또한', '또는', '그것', '이것', '저것', '우리', '나는', '내가', '저는', '제가', '에서', '에게', '으로', '까지', '부터', '이나', '이랑', '하고']);
   Object.entries(freq).forEach(([word, count]) => {
-    if (count >= 3 && !IGNORE.has(word)) {
+    if (count >= 3 && !COMMON_WORDS_TO_IGNORE.has(word)) {
       issues.push({
         type: 'duplicate_word',
         severity: count >= 5 ? 'high' : 'medium',
@@ -293,6 +301,113 @@ function generatePraise(score, stats, issues) {
     return '좋아요! 조금 더 다듬으면 훨씬 맛있는 빵이 될 것 같아요. 같이 고쳐봐요! 🍞';
   }
   return '반죽 단계예요! 괜찮아요, 처음엔 다 이래요. 하나하나 고쳐나가다 보면 어느새 근사한 빵이 될 거예요! 💪';
+}
+
+function describeSentenceFlavor(avgLength) {
+  if (avgLength <= 18) return '짧고 경쾌한';
+  if (avgLength >= 36) return '길고 흐르는';
+  return '고르게 이어지는';
+}
+
+function describeSpeechTrend(formalCount, informalCount) {
+  if (formalCount >= 2 && formalCount > informalCount * 1.2) {
+    return '존댓말을 차근차근 쓰는 편이에요.';
+  }
+  if (informalCount >= 2 && informalCount > formalCount * 1.2) {
+    return '반말로 가깝고 솔직하게 쓰는 편이에요.';
+  }
+  return '존댓말과 반말이 크게 치우치지 않아요.';
+}
+
+function describePunctuationTrend(questionCount, exclamationCount) {
+  if (questionCount === 0 && exclamationCount === 0) {
+    return '물음표와 느낌표를 아껴 쓰는 차분한 편이에요.';
+  }
+  if (questionCount > exclamationCount) {
+    return '물음표를 더 자주 써서 궁금한 마음을 잘 남겨요.';
+  }
+  if (exclamationCount > questionCount) {
+    return '느낌표를 더 자주 써서 생기 있는 마음이 보여요.';
+  }
+  return '물음표와 느낌표를 비슷하게 써서 리듬감이 있어요.';
+}
+
+/**
+ * 사용자가 쓴 여러 글에서 문체 지문을 추출합니다.
+ * @param {string[]|string} texts
+ * @returns {{
+ *   sampleCount: number,
+ *   averageSentenceLength: number,
+ *   sentenceFlavor: string,
+ *   frequentWords: Array<{word: string, count: number}>,
+ *   questionCount: number,
+ *   exclamationCount: number,
+ *   punctuationTrend: string,
+ *   speechTrend: string,
+ *   summary: string,
+ * }}
+ */
+export function analyzeStyleFingerprint(texts) {
+  const samples = (Array.isArray(texts) ? texts : [texts])
+    .map(text => (typeof text === 'string' ? text.trim() : ''))
+    .filter(Boolean);
+
+  if (samples.length === 0) {
+    return {
+      sampleCount: 0,
+      averageSentenceLength: 0,
+      sentenceFlavor: '아직 문장 길이를 재는 중이에요.',
+      frequentWords: [],
+      questionCount: 0,
+      exclamationCount: 0,
+      punctuationTrend: '아직 내 글 자국을 모으는 중이에요.',
+      speechTrend: '아직 말투를 읽는 중이에요.',
+      summary: '아직 내 글을 분석하지 않았어요. 먼저 빵을 한 번 구워볼까요? 🍞',
+    };
+  }
+
+  const allText = samples.join(' ');
+  const sentences = samples.flatMap(splitSentences);
+  const cleanSentenceLengths = sentences.map(sentence => sentence.replace(/\s/g, '').length).filter(Boolean);
+  const averageSentenceLength = cleanSentenceLengths.length > 0
+    ? Math.round(cleanSentenceLengths.reduce((sum, len) => sum + len, 0) / cleanSentenceLengths.length)
+    : 0;
+  const sentenceFlavor = describeSentenceFlavor(averageSentenceLength);
+
+  const words = tokenizeWords(allText.toLowerCase());
+  const freq = {};
+  words.forEach(word => {
+    const cleanWord = word.trim();
+    if (cleanWord.length < 2) return;
+    if (COMMON_WORDS_TO_IGNORE.has(cleanWord)) return;
+    if (/^\d+$/.test(cleanWord)) return;
+    freq[cleanWord] = (freq[cleanWord] || 0) + 1;
+  });
+
+  const frequentWords = Object.entries(freq)
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'ko'))
+    .slice(0, 5)
+    .map(([word, count]) => ({ word, count }));
+
+  const questionCount = (allText.match(/\?/g) || []).length;
+  const exclamationCount = (allText.match(/!/g) || []).length;
+  const formalCount = (allText.match(/(?:습니다|습니까|어요|아요|네요|겠습니다)(?:[.!?\s]|$)/g) || []).length;
+  const informalCount = (allText.match(/(?:했다|한다|이다|갔다|왔다|봤다|먹었다|썼다|있다|없다|좋다|싫다)(?:[.!?\s]|$)/g) || []).length;
+  const punctuationTrend = describePunctuationTrend(questionCount, exclamationCount);
+  const speechTrend = describeSpeechTrend(formalCount, informalCount);
+  const summary = `당신은 평균 ${averageSentenceLength || 0}자 문장을 쓰네요 (${sentenceFlavor} 느낌!). ${punctuationTrend} ${speechTrend}`;
+
+  return {
+    sampleCount: samples.length,
+    averageSentenceLength,
+    sentenceFlavor,
+    frequentWords,
+    questionCount,
+    exclamationCount,
+    punctuationTrend,
+    speechTrend,
+    summary,
+  };
 }
 
 // ─────────────────────────────────────────────

@@ -8,6 +8,39 @@
  *  - 현대 작가: 실명을 표방하지 않으며, 분위기·느낌만 순수 창작으로 추상화
  */
 
+export const CUSTOM_STYLE_ID = 'signature';
+
+export const DEFAULT_CUSTOM_STYLE = {
+  survey: {
+    mood: 'warm',
+    sentence: 'short',
+    speech: 'diary',
+    keywords: '',
+  },
+  sliders: {
+    sentenceLength: 45,
+    vividness: 50,
+    energy: 50,
+    humor: 35,
+  },
+  analysis: {
+    sampleCount: 0,
+    averageSentenceLength: 0,
+    sentenceFlavor: '아직 문장 길이를 재는 중이에요.',
+    frequentWords: [],
+    questionCount: 0,
+    exclamationCount: 0,
+    punctuationTrend: '아직 내 글 자국을 모으는 중이에요.',
+    speechTrend: '아직 말투를 읽는 중이에요.',
+    summary: '아직 내 글을 분석하지 않았어요. 먼저 빵을 한 번 구워볼까요? 🍞',
+  },
+  useAnalysis: false,
+  created: false,
+  updatedAt: null,
+  sliderMoves: 0,
+  profile: null,
+};
+
 export const AUTHORS = [
   {
     id: 'confession',
@@ -173,11 +206,203 @@ export const AUTHORS = [
   },
 ];
 
+const MOOD_LABELS = {
+  bright: '😄 밝고 재미있는',
+  warm: '🌸 따뜻하고 다정한',
+  calm: '🕯️ 차분하고 진지한',
+};
+
+const SENTENCE_LABELS = {
+  short: '✂️ 짧고 툭툭 끊어지는',
+  flow: '🌊 길고 흐르듯 이어지는',
+  rhythm: '🎵 리듬감 있게 통통 튀는',
+};
+
+const SPEECH_LABELS = {
+  formal: '🙋 존댓말로 차근차근 건네는',
+  informal: '😊 반말로 가깝게 다가가는',
+  diary: '📖 일기처럼 속마음을 적는',
+};
+
+function clampSlider(value, fallback) {
+  const num = Number(value);
+  if (!Number.isFinite(num)) return fallback;
+  return Math.max(0, Math.min(100, Math.round(num)));
+}
+
+function mergeCustomStyle(customStyle = {}) {
+  return {
+    ...DEFAULT_CUSTOM_STYLE,
+    ...customStyle,
+    survey: {
+      ...DEFAULT_CUSTOM_STYLE.survey,
+      ...(customStyle.survey || {}),
+    },
+    sliders: {
+      ...DEFAULT_CUSTOM_STYLE.sliders,
+      ...(customStyle.sliders || {}),
+    },
+    analysis: {
+      ...DEFAULT_CUSTOM_STYLE.analysis,
+      ...(customStyle.analysis || {}),
+      frequentWords: Array.isArray(customStyle.analysis?.frequentWords)
+        ? customStyle.analysis.frequentWords
+        : DEFAULT_CUSTOM_STYLE.analysis.frequentWords,
+    },
+  };
+}
+
+function getSentenceStyleText(data) {
+  const base = data.sliders.sentenceLength
+    + (data.survey.sentence === 'short' ? -18 : 0)
+    + (data.survey.sentence === 'flow' ? 18 : 0)
+    + (data.useAnalysis && data.analysis.averageSentenceLength
+      ? Math.max(-15, Math.min(15, data.analysis.averageSentenceLength - 24))
+      : 0);
+
+  if (base <= 35) return '짧고 경쾌한 문장';
+  if (base >= 65) return '길고 천천히 흐르는 문장';
+  return data.survey.sentence === 'rhythm'
+    ? '리듬감 있게 굴러가는 문장'
+    : '고르게 이어지는 문장';
+}
+
+function getVividnessText(value) {
+  if (value <= 30) return '담백한 표현';
+  if (value >= 70) return '반짝이는 표현';
+  return '차분하게 살짝 색을 입힌 표현';
+}
+
+function getEnergyText(value) {
+  if (value <= 30) return '조용하고 침착한 호흡';
+  if (value >= 70) return '활발하고 씩씩한 호흡';
+  return '부드럽고 안정적인 호흡';
+}
+
+function getHumorText(value) {
+  if (value <= 30) return '진지하게 마음을 전하는';
+  if (value >= 70) return '장난기 있게 미소 짓는';
+  return '살짝 웃음이 비치는';
+}
+
+export function buildCustomStylePreview(customStyle = {}) {
+  const data = mergeCustomStyle(customStyle);
+  const keywords = data.survey.keywords
+    .split(',')
+    .map(word => word.trim())
+    .filter(Boolean)
+    .slice(0, 3);
+  const opener = data.survey.speech === 'formal'
+    ? '오늘은'
+    : data.survey.speech === 'informal'
+      ? '오늘'
+      : '오늘은 왠지';
+  const keywordText = keywords.length > 0
+    ? `${keywords[0]} `
+    : data.sliders.vividness >= 65
+      ? '반짝 '
+      : '';
+  const ending = data.survey.speech === 'formal'
+    ? '마음이 되었어요.'
+    : data.survey.speech === 'informal'
+      ? '기분이 들었어.'
+      : '마음이 들었다.';
+  const sentence = `${opener} ${keywordText}${data.sliders.energy >= 65 ? '신나게' : '조용히'} 한 장면을 꺼내 ${ending}`.replace(/\s+/g, ' ').trim();
+  const description = `${getSentenceStyleText(data)}에 ${getVividnessText(data)}, ${getEnergyText(data)}, ${getHumorText(data)} 느낌을 섞었어요.`;
+
+  return { sentence, description };
+}
+
+export function createCustomStyleProfile(customStyle = {}) {
+  const data = mergeCustomStyle(customStyle);
+  const preview = buildCustomStylePreview(data);
+  const keywords = data.survey.keywords
+    .split(',')
+    .map(word => word.trim())
+    .filter(Boolean)
+    .slice(0, 5);
+  const frequentWords = data.useAnalysis
+    ? (data.analysis.frequentWords || []).slice(0, 3).map(item => item.word)
+    : [];
+  const signatureWords = [...new Set([...keywords, ...frequentWords])];
+  const mood = `${MOOD_LABELS[data.survey.mood]} · ${getSentenceStyleText(data)} · ${getEnergyText(data)}`;
+  const speechLabel = SPEECH_LABELS[data.survey.speech] || SPEECH_LABELS.diary;
+  const vocabularyText = signatureWords.length > 0
+    ? `"${signatureWords.join('", "')}" 같은 나만의 단어가 살아 있는 어휘`
+    : `${getVividnessText(data)}을 살리는 말`;
+  const analysisLine = data.useAnalysis && data.analysis.sampleCount > 0
+    ? `최근 글 ${data.analysis.sampleCount}편에서 드러난 ${data.analysis.sentenceFlavor} 흐름과 ${data.analysis.speechTrend}`
+    : '아직은 내가 고른 설문과 슬라이더 취향을 중심으로 굽는 중';
+
+  return {
+    id: CUSTOM_STYLE_ID,
+    name: '🏆 나만의 시그니처 빵',
+    baseAuthor: '내가 직접 만든 문체 레시피',
+    copyrightStatus: 'original',
+    mood,
+    styleFeatures: {
+      viewpoint: `${speechLabel} 시점`,
+      tone: `${MOOD_LABELS[data.survey.mood]} 분위기에 ${getHumorText(data)} 말투`,
+      sentence: `${getSentenceStyleText(data)} (${analysisLine})`,
+      emotion: `${MOOD_LABELS[data.survey.mood]} 감정선, ${getEnergyText(data)}`,
+      vocabulary: vocabularyText,
+    },
+    editingGuidelines: [
+      `${getSentenceStyleText(data)}이 느껴지도록 한 문장씩 호흡을 맞춰봐요.`,
+      signatureWords.length > 0
+        ? `"${signatureWords[0]}" 같은 나만의 단어를 한 번씩 반짝이게 넣어봐요.`
+        : '자주 쓰고 싶은 단어를 한두 개 골라 글의 향기로 써봐요.',
+      data.useAnalysis && data.analysis.sampleCount > 0
+        ? `최근 내 글처럼 ${data.analysis.punctuationTrend}`
+        : `${SPEECH_LABELS[data.survey.speech]} 느낌을 끝까지 지켜보세요.`,
+      `${getHumorText(data)} 분위기를 살리되, 너무 많이 꾸미지 말고 내 마음이 먼저 보이게 써봐요.`,
+    ],
+    encouragements: [
+      '이건 정말 네 글 냄새가 나는 레시피예요! 아주 멋져요! 🏆',
+      '한 줄만 읽어도 "아, 이건 네 문체다!" 하고 느껴져요. 계속 키워봐요! 🍞',
+      '조금씩 고를수록 너만의 시그니처 빵이 더 진해지고 있어요! ✨',
+    ],
+    exampleSentences: [preview.sentence],
+    previewDescription: preview.description,
+  };
+}
+
+export function normalizeCustomStyle(customStyle = {}) {
+  const merged = mergeCustomStyle(customStyle);
+  const normalized = {
+    ...merged,
+    survey: {
+      ...merged.survey,
+      keywords: typeof merged.survey.keywords === 'string' ? merged.survey.keywords : '',
+    },
+    sliders: {
+      sentenceLength: clampSlider(merged.sliders.sentenceLength, DEFAULT_CUSTOM_STYLE.sliders.sentenceLength),
+      vividness: clampSlider(merged.sliders.vividness, DEFAULT_CUSTOM_STYLE.sliders.vividness),
+      energy: clampSlider(merged.sliders.energy, DEFAULT_CUSTOM_STYLE.sliders.energy),
+      humor: clampSlider(merged.sliders.humor, DEFAULT_CUSTOM_STYLE.sliders.humor),
+    },
+    sliderMoves: Math.max(0, Number(merged.sliderMoves) || 0),
+    created: Boolean(merged.created),
+    useAnalysis: Boolean(merged.useAnalysis),
+  };
+
+  normalized.profile = createCustomStyleProfile(normalized);
+  return normalized;
+}
+
+export function getAllAuthors(customStyle) {
+  return [createCustomStyleProfile(customStyle), ...AUTHORS];
+}
+
 /**
  * ID로 작가 프로필을 찾아 반환합니다.
  * @param {string} id
+ * @param {Object} [customStyle]
  * @returns {Object|null}
  */
-export function getAuthorById(id) {
+export function getAuthorById(id, customStyle) {
+  if (id === CUSTOM_STYLE_ID) {
+    return createCustomStyleProfile(customStyle);
+  }
   return AUTHORS.find(a => a.id === id) || null;
 }

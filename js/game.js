@@ -133,8 +133,8 @@ export const BADGE_DEFS = [
   {
     id: 'recipe_all',
     name: '문체 마스터 🏆',
-    description: '6가지 문체 레시피를 모두 체험했어요!',
-    check: (state) => Object.keys(state.recipeUsage || {}).filter(k => k !== 'free').length >= 6,
+    description: '7가지 문체 레시피를 모두 체험했어요!',
+    check: (state) => Object.keys(state.recipeUsage || {}).filter(k => k !== 'free').length >= 7,
   },
   {
     id: 'recipe_confession_3',
@@ -147,6 +147,24 @@ export const BADGE_DEFS = [
     name: '다정 일기 마스터 🌸',
     description: '매일 다정 일기빵으로 5번 글을 구웠어요!',
     check: (state) => ((state.recipeUsage || {})['diary'] || 0) >= 5,
+  },
+  {
+    id: 'custom_style_complete',
+    name: '나만의 문체 완성! 🏆',
+    description: '나만의 시그니처 빵을 처음 완성했어요!',
+    check: (state) => Boolean(state.customStyle && state.customStyle.created),
+  },
+  {
+    id: 'style_fingerprint_first',
+    name: '문체 지문 첫 분석 🔎',
+    description: '내 글에서 문체 지문을 처음 분석했어요!',
+    check: (state) => (state.customStyle?.analysis?.sampleCount || 0) >= 1,
+  },
+  {
+    id: 'slider_artisan',
+    name: '슬라이더 장인 🎚️',
+    description: '문체 슬라이더를 여러 번 만지며 내 취향을 다듬었어요!',
+    check: (state) => (state.customStyle?.sliderMoves || 0) >= 10,
   },
 ];
 
