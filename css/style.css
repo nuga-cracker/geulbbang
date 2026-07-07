@@ -360,6 +360,162 @@ body {
   gap: var(--space-sm);
 }
 
+/* ─────────────────────────────────────────────
+   귀여운 빵/반죽 마스코트
+   ───────────────────────────────────────────── */
+.mascot-intro {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: linear-gradient(180deg, #fff7db, #fff2c7);
+  border-color: #f1cb73;
+  padding: 14px var(--space-md);
+}
+
+.mascot-copy {
+  font-size: var(--font-size-sm);
+  color: #7c4a16;
+  font-weight: 600;
+}
+
+.bread-mascot,
+.dough-mascot {
+  position: relative;
+  flex-shrink: 0;
+  width: 54px;
+  height: 46px;
+  border: 2px solid #7c4a16;
+  box-shadow: 0 3px 0 rgba(124, 74, 22, 0.12);
+}
+
+.bread-mascot {
+  border-radius: 16px 16px 12px 12px;
+  background: linear-gradient(180deg, #f7c948, #d97706);
+}
+
+.dough-mascot {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff6de, #f6d58d 70%);
+}
+
+.bread-mascot::before,
+.dough-mascot::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border-radius: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+}
+
+.mascot-face {
+  position: absolute;
+  inset: 0;
+}
+
+.mascot-eye {
+  position: absolute;
+  top: 17px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #2e1c08;
+}
+
+.mascot-eye.left { left: 16px; }
+.mascot-eye.right { right: 16px; }
+
+.mascot-smile {
+  position: absolute;
+  left: 50%;
+  top: 25px;
+  width: 14px;
+  height: 8px;
+  border-bottom: 2px solid #2e1c08;
+  border-radius: 0 0 12px 12px;
+  transform: translateX(-50%);
+}
+
+.mascot-cheek {
+  position: absolute;
+  top: 25px;
+  width: 9px;
+  height: 6px;
+  border-radius: 999px;
+  background: #ff9aa2;
+  opacity: 0.9;
+}
+
+.mascot-cheek.left { left: 8px; }
+.mascot-cheek.right { right: 8px; }
+
+.dough-helper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff6de;
+  border: 1px solid #f6d58d;
+  border-radius: var(--radius);
+  padding: 10px var(--space-sm);
+  margin-bottom: var(--space-sm);
+}
+
+.dough-helper p {
+  font-size: var(--font-size-sm);
+  color: #7c4a16;
+  font-weight: 600;
+}
+
+.onboarding-mascot {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: var(--space-sm);
+}
+
+.bread-mascot.mini,
+.dough-mascot.mini {
+  width: 36px;
+  height: 32px;
+}
+
+.dough-mascot.mini {
+  width: 34px;
+  height: 34px;
+}
+
+.bread-mascot.mini .mascot-eye,
+.dough-mascot.mini .mascot-eye {
+  top: 12px;
+  width: 5px;
+  height: 5px;
+}
+
+.bread-mascot.mini .mascot-eye.left,
+.dough-mascot.mini .mascot-eye.left { left: 10px; }
+.bread-mascot.mini .mascot-eye.right,
+.dough-mascot.mini .mascot-eye.right { right: 10px; }
+
+.bread-mascot.mini .mascot-smile,
+.dough-mascot.mini .mascot-smile {
+  top: 18px;
+  width: 10px;
+  height: 6px;
+}
+
+.bread-mascot.mini .mascot-cheek,
+.dough-mascot.mini .mascot-cheek {
+  top: 18px;
+  width: 6px;
+  height: 4px;
+}
+
+.bread-mascot.mini .mascot-cheek.left,
+.dough-mascot.mini .mascot-cheek.left { left: 7px; }
+.bread-mascot.mini .mascot-cheek.right,
+.dough-mascot.mini .mascot-cheek.right { right: 7px; }
+
 .writing-wrapper {
   position: relative;
 }
@@ -842,6 +998,23 @@ body {
   .daily-prompt-bar { flex-direction: column; align-items: flex-start; }
   .hero-banner { padding: var(--space-lg); flex-direction: column; }
   .hero-stats { gap: var(--space-lg); }
+  .mascot-intro {
+    align-items: flex-start;
+  }
+  .mascot-copy {
+    line-height: 1.5;
+  }
+  .bread-mascot {
+    width: 46px;
+    height: 40px;
+  }
+  .dough-mascot {
+    width: 42px;
+    height: 42px;
+  }
+  .dough-helper {
+    align-items: flex-start;
+  }
 }
 
 /* ─────────────────────────────────────────────
