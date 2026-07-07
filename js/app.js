@@ -441,7 +441,7 @@ function renderFeedback(result) {
     grammarSuggestions.forEach(item => {
       html += `
         <li class="feedback-grammar-item">
-          <p class="feedback-grammar-source">“${escapeHtml(item.excerpt)}”</p>
+          <p class="feedback-grammar-source">원문: ${escapeHtml(item.excerpt)}</p>
           <p class="feedback-grammar-message">${escapeHtml(item.message)}</p>
           <p class="feedback-grammar-suggestion">→ ${escapeHtml(item.suggestion)}</p>
         </li>

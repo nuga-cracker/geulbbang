@@ -249,11 +249,13 @@ function checkAwkwardSentences(text) {
 
   const addSuggestion = (excerpt, message, suggestion) => {
     const safeExcerpt = String(excerpt || '').trim();
-    if (!safeExcerpt) return;
-    const key = `${safeExcerpt}|${message}|${suggestion}`;
+    const safeMessage = String(message || '').trim();
+    const safeSuggestion = String(suggestion || '').trim();
+    if (!safeExcerpt || !safeMessage || !safeSuggestion) return;
+    const key = `${safeExcerpt}|${safeMessage}|${safeSuggestion}`;
     if (dedupe.has(key)) return;
     dedupe.add(key);
-    suggestions.push({ excerpt: safeExcerpt, message, suggestion });
+    suggestions.push({ excerpt: safeExcerpt, message: safeMessage, suggestion: safeSuggestion });
   };
 
   const mixedParticlePattern = new RegExp(
