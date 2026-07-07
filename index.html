@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="글빵 — 맛있는 글을 만들어주는 제빵소. 글쓰기 첨삭 + 성장형 게임 웹앱. 서버·API 없이 무료!" />
+  <title>🍞 글빵 — 맛있는 글을 만들어주는 제빵소</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍞</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- ───── 헤더 ───── -->
+<header class="site-header" role="banner">
+  <div class="header-inner">
+    <div>
+      <h1 class="site-title">🍞 글빵</h1>
+      <p class="site-tagline">맛있는 글을 만들어주는 제빵소</p>
+    </div>
+    <div class="status-bar" aria-label="게임 상태">
+      <span id="level-display" class="status-level" aria-live="polite">레벨 1</span>
+      <span id="grade-display" class="status-grade" aria-live="polite">🫙 반죽</span>
+      <div class="exp-bar-wrapper" aria-label="경험치 바">
+        <div class="exp-bar-bg" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div id="exp-bar" class="exp-bar-fill" style="width:0%"></div>
+        </div>
+        <span id="exp-text" class="exp-text">0 / 100 EXP</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ───── 메인 컨텐츠 ───── -->
+<main class="main-container" role="main">
+
+  <!-- 탭 메뉴 -->
+  <nav class="tabs" role="tablist" aria-label="메뉴">
+    <button class="tab-btn active" data-target="panel-write" role="tab" aria-selected="true">✍️ 글쓰기</button>
+    <button class="tab-btn" data-target="panel-badges" role="tab" aria-selected="false">🏅 배지</button>
+    <button class="tab-btn" data-target="panel-portfolio" role="tab" aria-selected="false">🗂️ 진열장</button>
+  </nav>
+
+  <!-- ─── 글쓰기 패널 ─── -->
+  <div id="panel-write" class="tab-panel" role="tabpanel">
+
+    <!-- 오늘의 글감 -->
+    <div class="daily-prompt-bar" aria-label="오늘의 글감">
+      <span id="daily-prompt" class="daily-prompt-text">📝 오늘의 글감 불러오는 중...</span>
+      <button id="daily-use-btn" class="btn btn-secondary btn-sm">이 주제로 쓰기</button>
+    </div>
+
+    <!-- 글쓰기 영역 -->
+    <div class="card">
+      <h2 class="card-title">🌾 글 반죽하기</h2>
+      <div class="writing-wrapper">
+        <textarea
+          id="writing-area"
+          class="writing-area"
+          placeholder="여기에 글을 써보세요. 길든 짧든 괜찮아요! 투박한 초고(반죽)여도 좋아요. 쓰고 나서 '빵 굽기' 버튼을 눌러봐요! 🍞"
+          aria-label="글쓰기 영역"
+          rows="10"
+        ></textarea>
+        <span id="char-count" class="char-counter" aria-live="polite">0자</span>
+      </div>
+      <div class="bake-btn-wrapper">
+        <button id="bake-btn" class="btn btn-primary" aria-label="빵 굽기 — 첨삭받기">
+          🔥 빵 굽기 (첨삭받기)
+        </button>
+      </div>
+    </div>
+
+    <!-- 첨삭 피드백 -->
+    <div id="feedback-section" class="card hidden" aria-live="polite" aria-label="첨삭 결과">
+      <h2 class="card-title">👨‍🍳 선생님 첨삭 결과</h2>
+      <div id="feedback-content"></div>
+    </div>
+
+    <!-- 초기화 버튼 -->
+    <div class="reset-section">
+      <button id="reset-btn" class="btn btn-danger btn-sm">⚠️ 데이터 초기화</button>
+    </div>
+
+  </div>
+
+  <!-- ─── 배지 패널 ─── -->
+  <div id="panel-badges" class="tab-panel hidden" role="tabpanel">
+    <div class="card">
+      <h2 class="card-title">🏅 내 배지 모음</h2>
+      <div id="badge-list" class="badge-grid" aria-label="획득한 배지 목록">
+        <p class="empty-msg">아직 배지가 없어요. 글을 써봐요! 🌾</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── 진열장 패널 ─── -->
+  <div id="panel-portfolio" class="tab-panel hidden" role="tabpanel">
+    <div class="card">
+      <h2 class="card-title">🗂️ 내 빵 진열장</h2>
+      <p style="font-size:0.88rem;color:var(--color-text-light);margin-bottom:14px;">첨삭 후 "진열장에 추가" 버튼을 눌러 완성한 글을 저장해 보세요!</p>
+      <div id="portfolio-list" class="portfolio-list" aria-label="완성한 글 목록">
+        <p class="empty-msg">아직 완성한 빵이 없어요. 글을 쓰고 진열장에 추가해봐요! 🍞</p>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ───── 토스트 알림 컨테이너 ───── -->
+<div id="toast-container" role="status" aria-live="polite"></div>
+
+<!-- ───── 푸터 ───── -->
+<footer class="site-footer" role="contentinfo">
+  <p>🍞 글빵 (GeulBbang) — 맛있는 글을 만들어주는 제빵소</p>
+  <p style="margin-top:4px;">💸 유지비 0원 · 서버 없음 · API 키 불필요 · <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a>로 무료 배포</p>
+</footer>
+
+<!-- 모듈 스크립트 -->
+<script type="module" src="js/app.js"></script>
+
+</body>
+</html>
