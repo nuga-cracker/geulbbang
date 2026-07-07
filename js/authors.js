@@ -224,6 +224,10 @@ const SPEECH_LABELS = {
   diary: '📖 일기처럼 속마음을 적는',
 };
 
+const AVERAGE_SENTENCE_LENGTH_BASELINE = 24;
+const MAX_ANALYSIS_ADJUSTMENT = 15;
+const SURVEY_SENTENCE_SHIFT = 18;
+
 function clampSlider(value, fallback) {
   const num = Number(value);
   if (!Number.isFinite(num)) return fallback;
@@ -253,13 +257,13 @@ function mergeCustomStyle(customStyle = {}) {
 }
 
 function getSentenceStyleText(data) {
-  // 24자는 이 앱에서 '보통 호흡'으로 보는 평균 문장 길이 기준선이고,
+  // 평균 24자를 '보통 호흡' 기준선으로 보고,
   // 분석 결과는 슬라이더를 완전히 덮어쓰지 않도록 최대 ±15까지만 살짝 보정합니다.
   const base = data.sliders.sentenceLength
-    + (data.survey.sentence === 'short' ? -18 : 0)
-    + (data.survey.sentence === 'flow' ? 18 : 0)
+    + (data.survey.sentence === 'short' ? -SURVEY_SENTENCE_SHIFT : 0)
+    + (data.survey.sentence === 'flow' ? SURVEY_SENTENCE_SHIFT : 0)
     + (data.useAnalysis && data.analysis.averageSentenceLength
-      ? Math.max(-15, Math.min(15, data.analysis.averageSentenceLength - 24))
+      ? Math.max(-MAX_ANALYSIS_ADJUSTMENT, Math.min(MAX_ANALYSIS_ADJUSTMENT, data.analysis.averageSentenceLength - AVERAGE_SENTENCE_LENGTH_BASELINE))
       : 0);
 
   if (base <= 35) return '짧고 경쾌한 문장';

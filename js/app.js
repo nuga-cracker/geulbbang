@@ -21,6 +21,7 @@ let onboardingStepIndex = 0;
 
 const DEFAULT_RECIPE_ENCOURAGEMENT = '네 글의 결을 살려서 다듬어봐요!';
 const DEFAULT_RECIPE_GUIDELINE = '한 줄씩 호흡을 맞추며 다듬어봐요.';
+const MAX_STYLE_ANALYSIS_SAMPLES = 25;
 
 const ONBOARDING_STEPS = [
   {
@@ -126,7 +127,7 @@ function escapeHtml(str) {
 
 function announceBadges(newBadges = []) {
   newBadges.forEach(badge => {
-    showToast(`🏅 새 배지 획득: ${badge.name}`, 'badge');
+    showToast(`🏅 새 배지 획득: ${badge?.name || '새 배지'}`, 'badge');
   });
 }
 
@@ -319,7 +320,7 @@ function getStyleAnalysisTexts() {
   const currentDraft = textArea.value.trim();
   if (currentDraft.length >= 20) texts.push(currentDraft);
 
-  return [...new Set(texts.map(text => text.trim()).filter(Boolean))].slice(-25);
+  return [...new Set(texts.map(text => text.trim()).filter(Boolean))].slice(-MAX_STYLE_ANALYSIS_SAMPLES);
 }
 
 function renderSignaturePreview() {
@@ -345,10 +346,13 @@ function renderSignaturePreview() {
 
 function renderSignatureAnalysis() {
   const analysis = state.customStyle.analysis;
+  signatureAnalysisEl.replaceChildren();
+
   if (!analysis || analysis.sampleCount === 0) {
-    signatureAnalysisEl.innerHTML = `
-      <p class="signature-empty">아직 분석할 글이 없어요. 먼저 글을 한 편 굽거나, 아래 버튼으로 다시 살펴봐요! 🍞</p>
-    `;
+    const empty = document.createElement('p');
+    empty.className = 'signature-empty';
+    empty.textContent = '아직 분석할 글이 없어요. 먼저 글을 한 편 굽거나, 아래 버튼으로 다시 살펴봐요! 🍞';
+    signatureAnalysisEl.appendChild(empty);
     if (signatureApplyBtn) {
       signatureApplyBtn.textContent = '🧺 분석 반영하기';
       signatureApplyBtn.disabled = true;
@@ -359,16 +363,25 @@ function renderSignatureAnalysis() {
   const topWords = analysis.frequentWords.length > 0
     ? analysis.frequentWords.map(item => `${item.word}(${item.count})`).join(', ')
     : '아직 두드러진 단어는 적어요.';
+  const summary = document.createElement('p');
+  summary.className = 'signature-analysis-summary';
+  summary.textContent = analysis.summary;
 
-  signatureAnalysisEl.innerHTML = `
-    <p class="signature-analysis-summary">${escapeHtml(analysis.summary)}</p>
-    <ul class="signature-analysis-list">
-      <li>📏 평균 문장 길이: <strong>${analysis.averageSentenceLength}자</strong> (${escapeHtml(analysis.sentenceFlavor)})</li>
-      <li>🧂 자주 쓰는 단어: <strong>${escapeHtml(topWords)}</strong></li>
-      <li>❔ 문장 끝 습관: <strong>${escapeHtml(analysis.punctuationTrend)}</strong></li>
-      <li>🗣️ 말투 경향: <strong>${escapeHtml(analysis.speechTrend)}</strong></li>
-    </ul>
-  `;
+  const list = document.createElement('ul');
+  list.className = 'signature-analysis-list';
+
+  [
+    `📏 평균 문장 길이: ${analysis.averageSentenceLength}자 (${analysis.sentenceFlavor})`,
+    `🧂 자주 쓰는 단어: ${topWords}`,
+    `❔ 문장 끝 습관: ${analysis.punctuationTrend}`,
+    `🗣️ 말투 경향: ${analysis.speechTrend}`,
+  ].forEach(text => {
+    const item = document.createElement('li');
+    item.textContent = text;
+    list.appendChild(item);
+  });
+
+  signatureAnalysisEl.append(summary, list);
 
   if (signatureApplyBtn) {
     signatureApplyBtn.disabled = false;
@@ -497,8 +510,8 @@ function recordBakeHistory(text) {
   if (state.bakeHistory[state.bakeHistory.length - 1] !== text) {
     state.bakeHistory.push(text);
   }
-  if (state.bakeHistory.length > 25) {
-    state.bakeHistory = state.bakeHistory.slice(-25);
+  if (state.bakeHistory.length > MAX_STYLE_ANALYSIS_SAMPLES) {
+    state.bakeHistory = state.bakeHistory.slice(-MAX_STYLE_ANALYSIS_SAMPLES);
   }
 }
 

@@ -59,7 +59,9 @@ export function loadState() {
         : defaultState.recipeUsage,
       badges: Array.isArray(saved?.badges) ? saved.badges : defaultState.badges,
       portfolio: Array.isArray(saved?.portfolio) ? saved.portfolio : defaultState.portfolio,
-      bakeHistory: Array.isArray(saved?.bakeHistory) ? saved.bakeHistory.filter(Boolean).slice(-25) : defaultState.bakeHistory,
+      bakeHistory: Array.isArray(saved?.bakeHistory)
+        ? saved.bakeHistory.filter(text => text !== null && text !== undefined).slice(-25)
+        : defaultState.bakeHistory,
       customStyle: normalizeCustomStyle(saved?.customStyle || {}),
     };
   } catch (e) {
