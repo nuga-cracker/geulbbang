@@ -363,19 +363,19 @@ body {
   border: 1px solid var(--color-primary);
 }
 
-.prompt-pill-difficulty--쉬움 {
+.prompt-pill-difficulty--easy {
   background: #e8f5e9;
   color: #2e7d32;
   border: 1px solid #a5d6a7;
 }
 
-.prompt-pill-difficulty--보통 {
+.prompt-pill-difficulty--normal {
   background: #fff8e1;
   color: #e65100;
   border: 1px solid #ffcc02;
 }
 
-.prompt-pill-difficulty--어려움 {
+.prompt-pill-difficulty--hard {
   background: #fce4ec;
   color: #880e4f;
   border: 1px solid #f48fb1;
@@ -701,6 +701,12 @@ body {
 
 .writing-area::placeholder {
   color: #bbbbbb;
+}
+
+.writing-area-hint {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-light);
+  margin-top: 4px;
 }
 
 .char-counter {

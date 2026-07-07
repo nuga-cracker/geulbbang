@@ -94,10 +94,12 @@
         <textarea
           id="writing-area"
           class="writing-area"
-          placeholder="첫 문장만 써도 괜찮아요.&#10;예) 오늘은 이상하게 빵 냄새가 생각났다..."
+          placeholder="첫 문장만 써도 괜찮아요."
           aria-label="글쓰기 영역"
+          aria-describedby="writing-area-hint"
           rows="10"
         ></textarea>
+        <p id="writing-area-hint" class="writing-area-hint">예) 오늘은 이상하게 빵 냄새가 생각났다...</p>
         <span id="char-count" class="char-counter" aria-live="polite">0자</span>
       </div>
       <div class="bake-btn-wrapper">

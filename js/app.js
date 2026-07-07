@@ -342,7 +342,9 @@ function renderPromptItem(item) {
   if (!item) return;
   dailyPromptEl.textContent = item.prompt;
   if (dailyPromptPillsEl) {
-    dailyPromptPillsEl.innerHTML = `<span class="prompt-pill prompt-pill-category">${escapeHtml(item.category)}</span><span class="prompt-pill prompt-pill-difficulty prompt-pill-difficulty--${item.difficulty}">${escapeHtml(item.difficulty)}</span>`;
+    const difficultyClassMap = { '쉬움': 'easy', '보통': 'normal', '어려움': 'hard' };
+    const difficultyClass = difficultyClassMap[item.difficulty] || 'normal';
+    dailyPromptPillsEl.innerHTML = `<span class="prompt-pill prompt-pill-category">${escapeHtml(item.category)}</span><span class="prompt-pill prompt-pill-difficulty prompt-pill-difficulty--${difficultyClass}">${escapeHtml(item.difficulty)}</span>`;
   }
   if (dailyPromptGoalEl) {
     dailyPromptGoalEl.textContent = item.goal ? `🎯 목표: ${item.goal}` : '';
