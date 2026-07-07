@@ -238,6 +238,140 @@ function checkStyleConsistency(text) {
   return issues;
 }
 
+/** 비문/어색한 문장 패턴 감지 */
+function checkAwkwardSentences(text) {
+  const suggestions = [];
+  const dedupe = new Set();
+  const MAX_PARTICLE_STEM_LENGTH = 20;
+  const MIN_NOMINALIZATION_REPEAT = 2;
+  const MAX_PROBLEM_PATTERN_SPAN = 70;
+  const MIN_PROBLEM_PATTERN_REPEAT = 2;
+
+  const addSuggestion = (excerpt, message, suggestion) => {
+    const safeExcerpt = String(excerpt || '').trim();
+    const safeMessage = String(message || '').trim();
+    const safeSuggestion = String(suggestion || '').trim();
+    if (!safeExcerpt || !safeMessage || !safeSuggestion) return;
+    const key = `${safeExcerpt}|${safeMessage}|${safeSuggestion}`;
+    if (dedupe.has(key)) return;
+    dedupe.add(key);
+    suggestions.push({ excerpt: safeExcerpt, message: safeMessage, suggestion: safeSuggestion });
+  };
+
+  const mixedParticlePattern = new RegExp(
+    `([가-힣]{1,${MAX_PARTICLE_STEM_LENGTH}})(은는|는은|이가|가이|을를|를을)(?=[^가-힣]|$)`,
+    'g',
+  );
+  let particleMatch;
+  while ((particleMatch = mixedParticlePattern.exec(text)) !== null) {
+    const stem = particleMatch[1];
+    const pair = particleMatch[2];
+    addSuggestion(
+      particleMatch[0],
+      '조사가 겹쳐 보여 비문일 수 있어요.',
+      `"${stem}${pair[0]}"처럼 조사 하나만 남기면 더 자연스러워요.`,
+    );
+  }
+
+  const repeatedParticlePattern = new RegExp(
+    `([가-힣]{1,${MAX_PARTICLE_STEM_LENGTH}})(은|는|이|가|을|를|에)\\2(?=[^가-힣]|$)`,
+    'g',
+  );
+  let repeatedParticleMatch;
+  while ((repeatedParticleMatch = repeatedParticlePattern.exec(text)) !== null) {
+    const stem = repeatedParticleMatch[1];
+    const particle = repeatedParticleMatch[2];
+    addSuggestion(
+      repeatedParticleMatch[0],
+      '조사가 반복되어 비문일 수 있어요.',
+      `"${stem}${particle}"처럼 조사 하나만 남기면 더 자연스러워요.`,
+    );
+  }
+
+  const connectivePattern = /(그리고|그래서|하지만)\s*(?:,)?\s*\1/g;
+  let connectiveMatch;
+  while ((connectiveMatch = connectivePattern.exec(text)) !== null) {
+    addSuggestion(
+      connectiveMatch[0],
+      `"${connectiveMatch[1]}"가 반복되어 문장이 어색해 보일 수 있어요.`,
+      `"${connectiveMatch[1]}"를 한 번만 써도 흐름이 더 자연스러워요.`,
+    );
+  }
+
+  const endingPattern = /(했다|합니다|했습니다|입니다|같다)\s+\1/g;
+  let endingMatch;
+  while ((endingMatch = endingPattern.exec(text)) !== null) {
+    addSuggestion(
+      endingMatch[0],
+      '종결 표현이 이어져 보여 문장이 끊겨 읽힐 수 있어요.',
+      `같은 어미를 한 번만 남기거나 앞 문장을 다른 표현으로 바꿔보세요.`,
+    );
+  }
+
+  const reasonOverlapPattern = /때문입니다\s+때문이다|때문이다\s+때문입니다/g;
+  const reasonOverlapMatches = text.match(reasonOverlapPattern) || [];
+  reasonOverlapMatches.forEach(match => {
+    addSuggestion(
+      match,
+      '이유를 설명하는 표현이 겹쳐 보여요.',
+      '"때문입니다" 또는 "때문이다" 중 하나만 선택해도 충분해요.',
+    );
+  });
+
+  const verbosePattern = /하는\s+것이\s+좋을\s+것\s+같(?:다|아요|습니다)/g;
+  const verboseMatches = text.match(verbosePattern) || [];
+  verboseMatches.forEach(match => {
+    addSuggestion(
+      match,
+      '조금 장황한 표현이라 문장이 무거워질 수 있어요.',
+      '"하는 게 좋다"처럼 짧게 다듬으면 더 또렷해져요.',
+    );
+  });
+
+  const nominalizationPattern = /([가-힣]{2,20})(을|를)\s+하(?:였다|했다|였습니다|했습니다)/g;
+  const nominalizationMatches = [...text.matchAll(nominalizationPattern)];
+  if (nominalizationMatches.length >= MIN_NOMINALIZATION_REPEAT) {
+    const firstMatch = nominalizationMatches[0];
+    const first = firstMatch[0];
+    addSuggestion(
+      first,
+      `"~을/를 하다" 표현이 ${nominalizationMatches.length}번 보여 번역투처럼 느껴질 수 있어요.`,
+      '문맥이 허용한다면 동사 하나로 다듬어 더 간결하게 써보세요.',
+    );
+  }
+
+  const problemPattern = new RegExp(
+    `문제는[^.?!\\n]{0,${MAX_PROBLEM_PATTERN_SPAN}}라는\\s+것이다`,
+    'g',
+  );
+  const problemMatches = text.match(problemPattern) || [];
+  if (problemMatches.length >= MIN_PROBLEM_PATTERN_REPEAT) {
+    addSuggestion(
+      problemMatches[0],
+      '"문제는 ~라는 것이다" 구조가 반복되어 리듬이 단조로울 수 있어요.',
+      '한두 문장은 짧게 핵심만 남겨보면 더 힘 있는 문장이 돼요.',
+    );
+  }
+
+  const translationesePatterns = [
+    { pattern: /에\s+있어서/g, phrase: '에 있어서', replacement: '에서' },
+    { pattern: /에\s+대하여/g, phrase: '에 대하여', replacement: '에 대해' },
+    { pattern: /을\s+통해서/g, phrase: '을 통해서', replacement: '으로/로' },
+  ];
+  translationesePatterns.forEach(rule => {
+    const matches = text.match(rule.pattern) || [];
+    if (matches.length >= 1) {
+      addSuggestion(
+        rule.phrase,
+        `"${rule.phrase}"는 상황에 따라 조금 딱딱하게 들릴 수 있어요.`,
+        `문맥에 맞다면 "${rule.replacement}"처럼 더 가벼운 표현도 잘 어울려요.`,
+      );
+    }
+  });
+
+  return suggestions;
+}
+
 // ─────────────────────────────────────────────
 // 통계 계산
 // ─────────────────────────────────────────────
@@ -253,7 +387,7 @@ function calcStats(text, sentences) {
 // ─────────────────────────────────────────────
 // 점수 계산 (0~100 "맛있음 점수")
 // ─────────────────────────────────────────────
-function calcScore(issues, stats, revisionCount) {
+function calcScore(issues, stats, revisionCount, grammarSuggestions = []) {
   let score = 100;
 
   // 지적 사항에 따라 점수 차감
@@ -269,6 +403,10 @@ function calcScore(issues, stats, revisionCount) {
 
   // 재작성 횟수에 따라 보너스
   score += Math.min(revisionCount * 5, 30);
+
+  // 비문/어색한 문장 제안은 아주 약하게만 반영 (제안 1개당 -1점, 최대 -4점)
+  // 초등학생/일반 사용자도 부담 없이 쓰도록 감점 상한을 낮게 유지
+  score -= Math.min(grammarSuggestions.length, 4);
 
   return Math.max(0, Math.min(100, score));
 }
@@ -314,7 +452,7 @@ function generatePraise(score, stats, issues) {
  *
  * @param {string} text - 분석할 텍스트
  * @param {number} revisionCount - 이 글의 재작성 횟수 (점수 보정에 사용)
- * @returns {{ issues: Array, stats: Object, score: number, praise: string }}
+ * @returns {{ issues: Array, grammarSuggestions: Array, stats: Object, score: number, praise: string }}
  */
 export function analyzeText(text, revisionCount = 0) {
   // ── AI 연동 스텁 (지금은 비활성) ──────────────────────
@@ -332,12 +470,13 @@ export function analyzeText(text, revisionCount = 0) {
     ...checkDoubleNegative(text),
     ...checkStyleConsistency(text),
   ];
+  const grammarSuggestions = checkAwkwardSentences(text);
 
   const stats = calcStats(text, sentences);
-  const score = calcScore(allIssues, stats, revisionCount);
+  const score = calcScore(allIssues, stats, revisionCount, grammarSuggestions);
   const praise = generatePraise(score, stats, allIssues);
 
-  return { issues: allIssues, stats, score, praise };
+  return { issues: allIssues, grammarSuggestions, stats, score, praise };
 }
 
 /**
