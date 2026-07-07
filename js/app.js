@@ -291,7 +291,7 @@ function updateStatusBar() {
   const needed = expForNextLevel(state.level);
   const progress = needed > 0 ? Math.min((state.exp / needed) * 100, 100) : 100;
 
-  levelDisplay.textContent = `레벨 ${state.level}`;
+  levelDisplay.textContent = `견습 제빵사 Lv.${state.level}`;
   gradeDisplay.textContent = `${grade.emoji} ${grade.name}`;
   expBar.style.width = `${progress}%`;
   expText.textContent = `${state.exp} / ${needed} EXP`;
@@ -486,7 +486,7 @@ function renderFeedback(result) {
         <p>${escapeHtml(praise)}</p>
       </div>
       <div class="feedback-score" style="color:${scoreColor}">
-        오늘의 맛있음 점수: <strong>${score}점</strong>
+        오늘의 빵 완성도: <strong>${score}점</strong>
       </div>
       <div class="feedback-top">
         <p class="feedback-top-title">${topSuggestionTitle}</p>
@@ -494,7 +494,7 @@ function renderFeedback(result) {
       </div>
     </div>
     <details class="feedback-details">
-      <summary class="feedback-details-summary">자세한 첨삭 보기 ▼</summary>
+      <summary class="feedback-details-summary">자세한 반죽 상태 보기 ▼</summary>
       <div class="feedback-details-content">
         <div class="feedback-stats">
           📊 글자 수: <strong>${stats.charCount}</strong>자 &nbsp;|&nbsp;
@@ -506,7 +506,7 @@ function renderFeedback(result) {
   if (issues.length === 0) {
     html += '<div class="feedback-no-issues">✨ 지적할 사항이 없어요! 완벽한 빵이에요!</div>';
   } else {
-    html += `<div class="feedback-issues-title">🔍 선생님의 첨삭 의견 (${issues.length}가지)</div><ul class="feedback-issues">`;
+    html += `<div class="feedback-issues-title">🔍 제빵사의 첨삭 메모 (${issues.length}가지)</div><ul class="feedback-issues">`;
     issues.forEach(issue => {
       const icon = issue.severity === 'high' ? '🔴' : issue.severity === 'medium' ? '🟡' : '🔵';
       html += `
@@ -519,20 +519,20 @@ function renderFeedback(result) {
         </li>
       `;
     });
-    html += '</ul><p class="feedback-encourage">✏️ 고쳐쓰기를 해보세요! 고칠수록 경험치가 더 많이 올라요! 🎮</p>';
+    html += '</ul><p class="feedback-encourage">✏️ 반죽을 다시 치대봐요! 고칠수록 경험치가 더 많이 올라요! 🎮</p>';
   }
 
   if (grammarSuggestions.length > 0) {
     html += `
       <div class="feedback-grammar-section">
-        <div class="feedback-grammar-title">🧁 비문 다듬기 (${grammarSuggestions.length}가지 제안)</div>
+        <div class="feedback-grammar-title">🧁 반죽 손질 제안 (${grammarSuggestions.length}가지)</div>
         <ul class="feedback-grammar-list">
     `;
     grammarSuggestions.forEach(item => {
       const applyBtnHtml = item.replacement
         ? `<button class="apply-suggestion-btn"
                   data-from="${escapeHtml(item.replacement.from)}"
-                  data-to="${escapeHtml(item.replacement.to)}">이 제안 적용하기</button>`
+                  data-to="${escapeHtml(item.replacement.to)}">이 제안 반영하기</button>`
         : '';
       html += `
         <li class="feedback-grammar-item">
@@ -588,10 +588,10 @@ function renderFeedback(result) {
       const current = textArea.value;
       if (current.includes(from)) {
         textArea.value = current.replaceAll(from, to);
-        btn.textContent = '✅ 적용 완료';
+        btn.textContent = '✅ 반영 완료';
         btn.disabled = true;
         btn.classList.add('apply-suggestion-done');
-        showToast('제안을 반영했어요. 다시 빵 굽기를 눌러 확인해보세요! 🍞', 'success');
+        showToast('반죽에 반영했어요. 다시 오븐에 넣어 확인해보세요! 🍞', 'success');
       } else {
         showToast('이미 반영됐거나 원문이 바뀌었어요.', 'warning');
       }
@@ -694,7 +694,7 @@ function handleBake() {
   }
   showNewBadges(newBadges);
 
-  bakeBtn.textContent = '🔥 다시 굽기 (고쳐쓰기)';
+  bakeBtn.textContent = '🔥 다시 오븐에 넣기 (고쳐쓰기)';
   feedbackSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
@@ -719,7 +719,7 @@ function handleReset() {
   isFirstAnalysis = true;
   textArea.value = '';
   feedbackSection.classList.add('hidden');
-  bakeBtn.textContent = '🔥 빵 굽기 (첨삭받기)';
+  bakeBtn.textContent = '🔥 오븐에 넣고 첨삭받기';
   updateStatusBar();
   updateBadgeList();
   updatePortfolio();
@@ -745,7 +745,7 @@ function handleUseDailyPrompt() {
   currentText = '';
   isFirstAnalysis = true;
   feedbackSection.classList.add('hidden');
-  bakeBtn.textContent = '🔥 빵 굽기 (첨삭받기)';
+  bakeBtn.textContent = '🔥 오븐에 넣고 첨삭받기';
 }
 
 function handleNextPrompt() {
@@ -766,7 +766,7 @@ function handle3SentenceTemplate() {
   currentText = '';
   isFirstAnalysis = true;
   feedbackSection.classList.add('hidden');
-  bakeBtn.textContent = '🔥 빵 굽기 (첨삭받기)';
+  bakeBtn.textContent = '🔥 오븐에 넣고 첨삭받기';
 }
 
 // ─────────────────────────────────────────────

@@ -1685,3 +1685,523 @@ body {
   #onboarding-title { font-size: 1.05rem; }
   #onboarding-message { font-size: var(--font-size-sm); }
 }
+
+/* ═══════════════════════════════════════════════
+   🍞 제빵소 작업대 테마 (Bakery Workshop Theme)
+   동물의 숲 × 1인칭 타이쿤 감성
+   ═══════════════════════════════════════════════ */
+
+/* 추가 색상 변수 */
+:root {
+  --bakery-cream:      #fff7e8;
+  --bakery-butter:     #ffd978;
+  --bakery-caramel:    #c9822b;
+  --bakery-wood:       #8b5a2b;
+  --bakery-wood-dark:  #5c3a1e;
+  --bakery-wood-light: #d4a96a;
+  --bakery-pink:       #ffc7d6;
+  --bakery-mint:       #9ed9b5;
+  --bakery-sky:        #a8d8ff;
+  --bakery-ink:        #4b3424;
+  --bakery-paper:      #fef9ee;
+  --bakery-paper-dark: #f5e6c8;
+  --bakery-shadow:     rgba(91, 58, 30, 0.16);
+}
+
+/* ─────────────────────────────────────────────
+   HUD 헤더 — 게임 감성
+   ───────────────────────────────────────────── */
+.hud-bar {
+  gap: var(--space-sm);
+}
+
+.hud-level {
+  background: linear-gradient(135deg, var(--bakery-butter) 0%, var(--bakery-caramel) 100%);
+  color: var(--bakery-wood-dark);
+  border-radius: var(--radius-pill);
+  padding: 3px 12px;
+  font-size: var(--font-size-xs);
+  font-weight: 800;
+  box-shadow: 0 2px 6px rgba(201, 130, 43, 0.28);
+  white-space: nowrap;
+}
+
+.hud-grade {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--bakery-wood);
+  background: var(--bakery-cream);
+  border-radius: var(--radius-pill);
+  padding: 3px 10px;
+  border: 1px solid var(--bakery-wood-light);
+}
+
+/* 경험치 바 — 버터/카라멜 톤 */
+.exp-bar-fill {
+  background: linear-gradient(90deg, var(--bakery-butter), var(--bakery-caramel));
+}
+
+/* ─────────────────────────────────────────────
+   제빵소 작업대 카드 (bakery-workshop-card)
+   ───────────────────────────────────────────── */
+.bakery-workshop-card {
+  background: linear-gradient(180deg, #e8f4fd 0%, #f0ece6 30%, var(--bakery-cream) 60%, #ede0cc 100%);
+  border: 2px solid var(--bakery-wood-light);
+  border-radius: 20px;
+  box-shadow:
+    0 6px 24px var(--bakery-shadow),
+    inset 0 1px 0 rgba(255,255,255,0.7);
+  padding: 0;
+  margin-bottom: var(--space-md);
+  overflow: hidden;
+  position: relative;
+}
+
+/* ─────────────────────────────────────────────
+   배경 장식 (bakery-backdrop)
+   주방 벽 · 선반 · 창문 · 오븐 느낌
+   ───────────────────────────────────────────── */
+.bakery-backdrop {
+  background: linear-gradient(180deg, #c8e8f8 0%, #ddf0e8 40%, #f0ece6 100%);
+  padding: var(--space-sm) var(--space-md) var(--space-xs);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  border-bottom: 3px solid var(--bakery-wood-light);
+  position: relative;
+}
+
+/* 선반 장식 */
+.bakery-shelf {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: center;
+  flex: 1;
+}
+
+.shelf-item {
+  font-size: 1.2rem;
+  line-height: 1;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.15));
+  transition: transform 0.2s ease;
+}
+
+.shelf-item:hover {
+  transform: translateY(-2px) scale(1.1);
+}
+
+/* 창문 장식 */
+.bakery-window {
+  flex-shrink: 0;
+}
+
+.window-frame {
+  background: linear-gradient(135deg, #d4eeff, #b8dfff);
+  border: 2px solid var(--bakery-wood-light);
+  border-radius: 8px 8px 4px 4px;
+  width: 42px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  box-shadow: inset 0 2px 4px rgba(100,160,220,0.3);
+}
+
+/* 오븐 힌트 */
+.bakery-oven-hint {
+  font-size: 1.3rem;
+  filter: drop-shadow(0 2px 4px rgba(220, 100, 0, 0.3));
+  animation: flicker 2.5s ease-in-out infinite;
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.75; transform: scale(0.95); }
+}
+
+/* ─────────────────────────────────────────────
+   오늘의 주문서 (order-ticket)
+   ───────────────────────────────────────────── */
+.order-ticket {
+  margin: var(--space-md) var(--space-md) 0;
+  background: var(--bakery-paper);
+  border: 2px solid var(--bakery-paper-dark);
+  border-radius: 14px;
+  padding: var(--space-md);
+  position: relative;
+  box-shadow:
+    0 3px 10px rgba(139, 90, 43, 0.12),
+    inset 0 1px 0 rgba(255,255,255,0.8);
+
+  /* 종이 느낌 — 상단 뜯긴 선 */
+  border-top: none;
+}
+
+/* 주문서 상단 찢어진 가장자리 효과 */
+.order-ticket::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 10px;
+  right: 10px;
+  height: 10px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--bakery-paper) 0px,
+    var(--bakery-paper) 8px,
+    transparent 8px,
+    transparent 12px
+  );
+  border-radius: 4px 4px 0 0;
+}
+
+.order-ticket-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-sm);
+}
+
+.order-ticket-label {
+  font-size: var(--font-size-sm);
+  font-weight: 800;
+  color: var(--bakery-wood-dark);
+  background: linear-gradient(135deg, var(--bakery-butter), #ffeba0);
+  padding: 3px 12px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--bakery-caramel);
+  box-shadow: 0 1px 4px rgba(201,130,43,0.2);
+  white-space: nowrap;
+}
+
+/* 주문서 안의 pill들을 스티커처럼 */
+.order-ticket .prompt-pill {
+  border-radius: 6px;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  padding: 2px 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.order-ticket .daily-prompt-text {
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--bakery-ink);
+  line-height: 1.6;
+  margin-bottom: var(--space-xs);
+}
+
+.order-ticket .daily-prompt-meta {
+  background: rgba(255,255,255,0.6);
+  border-radius: var(--radius);
+  padding: 6px 10px;
+  margin-bottom: var(--space-sm);
+}
+
+.order-ticket .daily-prompt-goal,
+.order-ticket .daily-prompt-starter {
+  font-size: var(--font-size-xs);
+  color: var(--bakery-wood);
+  font-weight: 600;
+}
+
+.order-ticket .daily-prompt-actions {
+  display: flex;
+  gap: var(--space-xs);
+  flex-wrap: wrap;
+}
+
+.order-ticket .prompt-hint-note {
+  font-size: var(--font-size-xs);
+  color: var(--bakery-caramel);
+  margin-top: var(--space-xs);
+  font-weight: 500;
+}
+
+/* ─────────────────────────────────────────────
+   작업대 영역 (workbench-zone)
+   나무 작업대 질감
+   ───────────────────────────────────────────── */
+.workbench-zone {
+  background: linear-gradient(
+    180deg,
+    var(--bakery-cream) 0%,
+    #eddfc8 40%,
+    #e8d5b5 100%
+  );
+  border-top: 4px solid var(--bakery-wood-light);
+  padding: var(--space-md);
+  position: relative;
+}
+
+/* 작업대 나무 결 느낌 */
+.workbench-zone::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg,
+    var(--bakery-wood-light),
+    var(--bakery-caramel),
+    var(--bakery-wood-light),
+    var(--bakery-caramel),
+    var(--bakery-wood-light)
+  );
+  opacity: 0.5;
+}
+
+/* ─────────────────────────────────────────────
+   반죽 노트 (dough-note)
+   작업대 위 종이 노트 느낌
+   ───────────────────────────────────────────── */
+.dough-note-wrapper {
+  position: relative;
+  margin-bottom: var(--space-sm);
+  background: var(--bakery-paper);
+  border-radius: 12px;
+  border: 2px solid var(--bakery-paper-dark);
+  box-shadow:
+    0 4px 12px rgba(139, 90, 43, 0.14),
+    inset 0 1px 0 rgba(255,255,255,0.9);
+  overflow: hidden;
+}
+
+.dough-note-label {
+  background: linear-gradient(90deg, var(--bakery-paper-dark), transparent);
+  color: var(--bakery-wood);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  padding: 6px 12px 4px;
+  border-bottom: 1px solid var(--bakery-paper-dark);
+  letter-spacing: 0.3px;
+}
+
+.writing-area.dough-note {
+  background: var(--bakery-paper);
+  border: none;
+  border-radius: 0;
+  padding: var(--space-md);
+  font-family: 'Nanum Gothic', var(--font-main);
+  font-size: var(--font-size-md);
+  line-height: 2;
+  color: var(--bakery-ink);
+  /* 노트 줄 느낌 — line-height:2 @ font-size~1rem → 약 32px 행간에 맞춤.
+     background-size와 줄 위치(31px, 32px)는 line-height:2 값과 연동됩니다. */
+  background-image: repeating-linear-gradient(
+    transparent,
+    transparent 31px,
+    rgba(200, 170, 130, 0.25) 31px,
+    rgba(200, 170, 130, 0.25) 32px
+  );
+  background-size: 100% 32px;
+}
+
+.writing-area.dough-note:focus {
+  background-color: #fffdf4;
+  box-shadow: none;
+  border: none;
+  outline: none;
+}
+
+.dough-note-wrapper:focus-within {
+  outline: 2.5px solid var(--bakery-caramel);
+  outline-offset: 0;
+}
+
+.writing-area.dough-note::placeholder {
+  color: #c4a882;
+  font-style: italic;
+}
+
+/* ─────────────────────────────────────────────
+   오븐 버튼 (btn-oven)
+   ───────────────────────────────────────────── */
+.btn-oven {
+  background: linear-gradient(135deg, #ff8c42 0%, #e55d1a 50%, #c44a0e 100%);
+  color: white;
+  border-color: #c44a0e;
+  font-size: var(--font-size-base);
+  font-weight: 800;
+  padding: 12px 32px;
+  border-radius: var(--radius-pill);
+  box-shadow:
+    0 4px 16px rgba(196, 74, 14, 0.35),
+    0 2px 4px rgba(196, 74, 14, 0.2);
+  letter-spacing: 0.2px;
+  transition: all 0.2s ease;
+}
+
+.btn-oven:hover {
+  background: linear-gradient(135deg, #ff9e5e 0%, #f06a28 50%, #d45a18 100%);
+  color: white;
+  border-color: #d45a18;
+  transform: translateY(-2px);
+  box-shadow:
+    0 6px 20px rgba(196, 74, 14, 0.42),
+    0 3px 6px rgba(196, 74, 14, 0.24);
+}
+
+.btn-oven:active {
+  transform: scale(0.98) translateY(0);
+}
+
+.oven-btn-wrapper {
+  text-align: center;
+  margin-top: var(--space-md);
+  padding: var(--space-sm) 0;
+}
+
+/* ─────────────────────────────────────────────
+   제빵사의 메모 카드 (baker-memo-card)
+   ───────────────────────────────────────────── */
+.baker-memo-card {
+  background: linear-gradient(135deg, #fffbef 0%, var(--bakery-cream) 100%);
+  border: 2px solid var(--bakery-paper-dark);
+  border-radius: 16px;
+  box-shadow: 0 4px 16px var(--bakery-shadow);
+  position: relative;
+}
+
+.baker-memo-card::before {
+  content: "📋";
+  position: absolute;
+  top: -10px;
+  right: 20px;
+  font-size: 1.4rem;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+}
+
+.baker-memo-card .card-title {
+  color: var(--bakery-wood-dark);
+  font-size: var(--font-size-lg);
+}
+
+/* ─────────────────────────────────────────────
+   진열장 선반 스타일 (bakery-shelf-card)
+   ───────────────────────────────────────────── */
+.bakery-shelf-card {
+  background: linear-gradient(180deg, #f8eed8 0%, var(--bakery-cream) 100%);
+  border: 2px solid var(--bakery-wood-light);
+  border-radius: 16px;
+  box-shadow:
+    0 4px 12px rgba(139, 90, 43, 0.12),
+    inset 0 -4px 0 var(--bakery-wood-light);
+  overflow: hidden;
+}
+
+.bakery-shelf-card .card-title {
+  color: var(--bakery-wood-dark);
+}
+
+.bakery-shelf-list .portfolio-item {
+  background: var(--bakery-paper);
+  border: 1.5px solid var(--bakery-paper-dark);
+  border-radius: 10px;
+  box-shadow:
+    0 2px 6px rgba(139, 90, 43, 0.1),
+    inset 0 1px 0 rgba(255,255,255,0.8);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.bakery-shelf-list .portfolio-item:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 5px 14px rgba(139, 90, 43, 0.18),
+    inset 0 1px 0 rgba(255,255,255,0.9);
+  border-color: var(--bakery-caramel);
+}
+
+.bakery-shelf-list .portfolio-score {
+  background: linear-gradient(135deg, var(--bakery-butter), #ffeba0);
+  color: var(--bakery-wood-dark);
+  border: 1px solid var(--bakery-caramel);
+}
+
+/* ─────────────────────────────────────────────
+   마스코트 — 작업대 위 응원 메시지 스타일
+   ───────────────────────────────────────────── */
+.workbench-zone .mascot-intro {
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid var(--bakery-paper-dark);
+  border-radius: var(--radius);
+  margin-bottom: var(--space-sm);
+}
+
+.workbench-zone .mascot-copy {
+  color: var(--bakery-wood);
+}
+
+/* ─────────────────────────────────────────────
+   탭 — 제빵소 톤 강화
+   ───────────────────────────────────────────── */
+.tab-btn.active {
+  background: linear-gradient(135deg, var(--bakery-butter), var(--bakery-caramel));
+  color: var(--bakery-wood-dark);
+  font-weight: 800;
+}
+
+/* ─────────────────────────────────────────────
+   모바일 최적화 — 제빵소 요소
+   ───────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .bakery-backdrop {
+    padding: var(--space-xs) var(--space-sm);
+    gap: var(--space-xs);
+  }
+
+  .bakery-shelf {
+    gap: 6px;
+  }
+
+  .shelf-item {
+    font-size: 1rem;
+  }
+
+  .window-frame {
+    width: 34px;
+    height: 30px;
+    font-size: 0.85rem;
+  }
+
+  .bakery-oven-hint {
+    font-size: 1.1rem;
+  }
+
+  .order-ticket {
+    margin: var(--space-sm) var(--space-sm) 0;
+    padding: var(--space-sm);
+  }
+
+  .order-ticket-label {
+    font-size: var(--font-size-xs);
+    padding: 2px 8px;
+  }
+
+  .workbench-zone {
+    padding: var(--space-sm);
+  }
+
+  .oven-btn-wrapper .btn-oven {
+    width: 100%;
+    min-height: 48px;
+    font-size: var(--font-size-sm);
+  }
+
+  .baker-memo-card::before {
+    display: none;
+  }
+
+  .bakery-workshop-card {
+    border-radius: 14px;
+  }
+
+  /* 선반 장식 아이템 일부 숨김 */
+  .shelf-item:nth-child(n+4) {
+    display: none;
+  }
+}
