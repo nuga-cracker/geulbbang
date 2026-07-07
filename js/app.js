@@ -19,6 +19,9 @@ let currentText = '';
 let isFirstAnalysis = true;
 let onboardingStepIndex = 0;
 
+const DEFAULT_RECIPE_ENCOURAGEMENT = '네 글의 결을 살려서 다듬어봐요!';
+const DEFAULT_RECIPE_GUIDELINE = '한 줄씩 호흡을 맞추며 다듬어봐요.';
+
 const ONBOARDING_STEPS = [
   {
     title: '🌾 글빵에 온 걸 환영해요!',
@@ -354,14 +357,14 @@ function renderSignatureAnalysis() {
   }
 
   const topWords = analysis.frequentWords.length > 0
-    ? analysis.frequentWords.map(item => `${escapeHtml(item.word)}(${item.count})`).join(', ')
+    ? analysis.frequentWords.map(item => `${item.word}(${item.count})`).join(', ')
     : '아직 두드러진 단어는 적어요.';
 
   signatureAnalysisEl.innerHTML = `
     <p class="signature-analysis-summary">${escapeHtml(analysis.summary)}</p>
     <ul class="signature-analysis-list">
       <li>📏 평균 문장 길이: <strong>${analysis.averageSentenceLength}자</strong> (${escapeHtml(analysis.sentenceFlavor)})</li>
-      <li>🧂 자주 쓰는 단어: <strong>${topWords}</strong></li>
+      <li>🧂 자주 쓰는 단어: <strong>${escapeHtml(topWords)}</strong></li>
       <li>❔ 문장 끝 습관: <strong>${escapeHtml(analysis.punctuationTrend)}</strong></li>
       <li>🗣️ 말투 경향: <strong>${escapeHtml(analysis.speechTrend)}</strong></li>
     </ul>
@@ -546,8 +549,8 @@ function renderFeedback(result) {
   if (selectedAuthor) {
     const encouragements = selectedAuthor.encouragements || [];
     const guidelines = selectedAuthor.editingGuidelines || [];
-    const encouragement = encouragements[Math.floor(Math.random() * encouragements.length)] || '네 글의 결을 살려서 다듬어봐요!';
-    const guideline = guidelines[Math.floor(Math.random() * guidelines.length)] || '한 줄씩 호흡을 맞추며 다듬어봐요.';
+    const encouragement = encouragements[Math.floor(Math.random() * encouragements.length)] || DEFAULT_RECIPE_ENCOURAGEMENT;
+    const guideline = guidelines[Math.floor(Math.random() * guidelines.length)] || DEFAULT_RECIPE_GUIDELINE;
     html += `
       <div class="recipe-feedback-section">
         <div class="recipe-feedback-title">🍽️ ${escapeHtml(selectedAuthor.name)} 관점에서 보면…</div>

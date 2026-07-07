@@ -253,6 +253,8 @@ function mergeCustomStyle(customStyle = {}) {
 }
 
 function getSentenceStyleText(data) {
+  // 24자는 이 앱에서 '보통 호흡'으로 보는 평균 문장 길이 기준선이고,
+  // 분석 결과는 슬라이더를 완전히 덮어쓰지 않도록 최대 ±15까지만 살짝 보정합니다.
   const base = data.sliders.sentenceLength
     + (data.survey.sentence === 'short' ? -18 : 0)
     + (data.survey.sentence === 'flow' ? 18 : 0)

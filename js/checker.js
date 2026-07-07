@@ -392,7 +392,7 @@ export function analyzeStyleFingerprint(texts) {
   const questionCount = (allText.match(/\?/g) || []).length;
   const exclamationCount = (allText.match(/!/g) || []).length;
   const formalCount = (allText.match(/(?:습니다|습니까|어요|아요|네요|겠습니다)(?:[.!?\s]|$)/g) || []).length;
-  const informalCount = (allText.match(/(?:했다|한다|이다|갔다|왔다|봤다|먹었다|썼다|있다|없다|좋다|싫다)(?:[.!?\s]|$)/g) || []).length;
+  const informalCount = (allText.match(/(?:했다|한다|해|하네|더라|하자|가자|보자|하지|좋아|좋네|이다|갔다|왔다|봤다|먹었다|썼다|있다|없다|좋다|싫다)(?:[.!?\s]|$)/g) || []).length;
   const punctuationTrend = describePunctuationTrend(questionCount, exclamationCount);
   const speechTrend = describeSpeechTrend(formalCount, informalCount);
   const summary = `당신은 평균 ${averageSentenceLength || 0}자 문장을 쓰네요 (${sentenceFlavor} 느낌!). ${punctuationTrend} ${speechTrend}`;
