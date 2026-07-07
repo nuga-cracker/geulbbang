@@ -4,7 +4,7 @@
  */
 
 import { analyzeText, analyzeWritingFingerprint } from './checker.js';
-import { addExp, calcExpGain, checkBadges, getBreadGrade, expForNextLevel, getDailyPrompt, BADGE_DEFS } from './game.js';
+import { addExp, calcExpGain, checkBadges, getBreadGrade, expForNextLevel, getDailyPromptItem, getRandomPromptItem, formatPromptForWriting, get3SentenceTemplate, BADGE_DEFS } from './game.js';
 import { loadState, saveState, resetState, todayString } from './storage.js';
 import { AUTHORS, getAuthorById } from './authors.js';
 
@@ -56,6 +56,9 @@ let currentRevisionCount = 0;
 let currentText = '';
 let isFirstAnalysis = true;
 
+// 현재 표시 중인 글감 아이템 (null이면 오늘의 글감)
+let currentPromptItem = null;
+
 // ─────────────────────────────────────────────
 // DOM 요소
 // ─────────────────────────────────────────────
@@ -71,9 +74,14 @@ const gradeDisplay = document.getElementById('grade-display');
 const badgeList = document.getElementById('badge-list');
 const portfolioList = document.getElementById('portfolio-list');
 const dailyPromptEl = document.getElementById('daily-prompt');
+const dailyPromptPillsEl = document.getElementById('daily-prompt-pills');
+const dailyPromptGoalEl = document.getElementById('daily-prompt-goal');
+const dailyPromptStarterEl = document.getElementById('daily-prompt-starter');
 const resetBtn = document.getElementById('reset-btn');
 const toastContainer = document.getElementById('toast-container');
 const dailyUseBreadBtn = document.getElementById('daily-use-btn');
+const dailyNextBtn = document.getElementById('daily-next-btn');
+const dailyTemplateBtn = document.getElementById('daily-template-btn');
 const recipeCardsEl = document.getElementById('recipe-cards');
 const recipeToggleBtn = document.getElementById('recipe-toggle-btn');
 const recipeSelectorContent = document.getElementById('recipe-selector-content');
@@ -330,9 +338,23 @@ function updatePortfolio() {
   });
 }
 
+function renderPromptItem(item) {
+  if (!item) return;
+  dailyPromptEl.textContent = item.prompt;
+  if (dailyPromptPillsEl) {
+    dailyPromptPillsEl.innerHTML = `<span class="prompt-pill prompt-pill-category">${escapeHtml(item.category)}</span><span class="prompt-pill prompt-pill-difficulty prompt-pill-difficulty--${item.difficulty}">${escapeHtml(item.difficulty)}</span>`;
+  }
+  if (dailyPromptGoalEl) {
+    dailyPromptGoalEl.textContent = item.goal ? `🎯 목표: ${item.goal}` : '';
+  }
+  if (dailyPromptStarterEl) {
+    dailyPromptStarterEl.textContent = item.starter ? `✍️ 첫 문장 힌트: ${item.starter}` : '';
+  }
+}
+
 function updateDailyPrompt() {
-  const prompt = getDailyPrompt();
-  dailyPromptEl.textContent = `📝 오늘의 글감: ${prompt}`;
+  currentPromptItem = getDailyPromptItem();
+  renderPromptItem(currentPromptItem);
 }
 
 // ─────────────────────────────────────────────
@@ -709,13 +731,34 @@ function handleReset() {
 }
 
 // ─────────────────────────────────────────────
-// 오늘의 글감 사용 버튼
+// 오늘의 글감 관련 버튼들
 // ─────────────────────────────────────────────
 function handleUseDailyPrompt() {
-  const prompt = getDailyPrompt();
+  const item = currentPromptItem || getDailyPromptItem();
   const currentVal = textArea.value.trim();
-  if (currentVal && !confirm('현재 작성 중인 글을 지우고 오늘의 글감을 불러올까요?')) return;
-  textArea.value = `[오늘의 글감] ${prompt}\n\n`;
+  if (currentVal && !confirm('현재 작성 중인 글을 지우고 글감을 불러올까요?')) return;
+  textArea.value = formatPromptForWriting(item);
+  textArea.focus();
+  textArea.setSelectionRange(textArea.value.length, textArea.value.length);
+  updateCharCount();
+  currentRevisionCount = 0;
+  currentText = '';
+  isFirstAnalysis = true;
+  feedbackSection.classList.add('hidden');
+  bakeBtn.textContent = '🔥 빵 굽기 (첨삭받기)';
+}
+
+function handleNextPrompt() {
+  const lastId = currentPromptItem ? currentPromptItem.id : null;
+  currentPromptItem = getRandomPromptItem(lastId);
+  renderPromptItem(currentPromptItem);
+}
+
+function handle3SentenceTemplate() {
+  const item = currentPromptItem || getDailyPromptItem();
+  const currentVal = textArea.value.trim();
+  if (currentVal && !confirm('현재 작성 중인 글을 지우고 3문장 틀을 넣을까요?')) return;
+  textArea.value = get3SentenceTemplate(item);
   textArea.focus();
   textArea.setSelectionRange(textArea.value.length, textArea.value.length);
   updateCharCount();
@@ -1081,6 +1124,8 @@ function init() {
   textArea.addEventListener('input', updateCharCount);
   resetBtn.addEventListener('click', handleReset);
   if (dailyUseBreadBtn) dailyUseBreadBtn.addEventListener('click', handleUseDailyPrompt);
+  if (dailyNextBtn) dailyNextBtn.addEventListener('click', handleNextPrompt);
+  if (dailyTemplateBtn) dailyTemplateBtn.addEventListener('click', handle3SentenceTemplate);
 
   initTabs();
   initCustomStyle();
