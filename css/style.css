@@ -1990,7 +1990,8 @@ body {
   font-size: var(--font-size-md);
   line-height: 2;
   color: var(--bakery-ink);
-  /* 노트 줄 느낌 */
+  /* 노트 줄 느낌 — line-height:2 @ font-size~1rem → 약 32px 행간에 맞춤.
+     background-size와 줄 위치(31px, 32px)는 line-height:2 값과 연동됩니다. */
   background-image: repeating-linear-gradient(
     transparent,
     transparent 31px,
