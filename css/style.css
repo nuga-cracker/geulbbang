@@ -1177,7 +1177,7 @@ body {
    ───────────────────────────────────────────── */
 @media (max-width: 640px) {
   .site-header { padding: 0 var(--space-md); }
-  .header-inner { flex-wrap: wrap; height: auto; padding: 8px 0; gap: 6px; }
+  .header-inner { flex-wrap: wrap; height: auto; padding: 8px 0; gap: var(--space-xs); }
   .status-bar { justify-content: flex-start; flex: none; width: 100%; }
   .header-actions { margin-left: auto; }
   .exp-bar-bg { width: 60px; }

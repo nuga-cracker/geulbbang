@@ -15,7 +15,8 @@ const SLIDER_HIGH_THRESHOLD = 60;
 const SLIDER_RANGE_FIRST_THIRD_MAX = 32;
 const SLIDER_RANGE_SECOND_THIRD_MAX = 66;
 const MAX_TOP_SUGGESTIONS = 3;
-const TOP_SUGGESTIONS_TITLE_PREFIX = '가장 먼저 보면 좋은 제안';
+const TOP_SUGGESTIONS_TITLE_BASE = '가장 먼저 보면 좋은 제안';
+const RECIPE_TOGGLE_LABEL = '문체 레시피 선택하기';
 const NO_ANALYSIS_TEXT_MESSAGE = '아직 분석할 글이 없어요. 먼저 글을 굽고 다시 눌러봐요! ✍️';
 const ANALYSIS_IDLE_MESSAGE = '아직 분석 전이에요. 글을 굽고 나서 눌러보세요! 🍞';
 
@@ -145,23 +146,18 @@ function buildTopSuggestions(issueMessages = [], grammarMessages = [], maxCount 
   const merged = [];
   let issueIndex = 0;
   let grammarIndex = 0;
-
-  if (issueMessages.length > 0 && merged.length < maxCount) {
-    merged.push(issueMessages[issueIndex]);
-    issueIndex += 1;
-  }
-  if (grammarMessages.length > 0 && merged.length < maxCount) {
-    merged.push(grammarMessages[grammarIndex]);
-    grammarIndex += 1;
-  }
+  let preferIssue = true;
   while (merged.length < maxCount && (issueIndex < issueMessages.length || grammarIndex < grammarMessages.length)) {
-    if (issueIndex < issueMessages.length && merged.length < maxCount) {
+    if ((preferIssue && issueIndex < issueMessages.length) || grammarIndex >= grammarMessages.length) {
       merged.push(issueMessages[issueIndex]);
       issueIndex += 1;
+      preferIssue = false;
     }
-    if (grammarIndex < grammarMessages.length && merged.length < maxCount) {
+    if (merged.length >= maxCount) break;
+    if ((!preferIssue && grammarIndex < grammarMessages.length) || issueIndex >= issueMessages.length) {
       merged.push(grammarMessages[grammarIndex]);
       grammarIndex += 1;
+      preferIssue = true;
     }
   }
   return merged;
@@ -408,7 +404,7 @@ function initRecipeSelectorToggle() {
   const setExpanded = (expanded) => {
     recipeSelectorContent.classList.toggle('hidden', !expanded);
     recipeToggleBtn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
-    recipeToggleBtn.textContent = expanded ? '문체 레시피 선택하기 ▲' : '문체 레시피 선택하기 ▼';
+    recipeToggleBtn.textContent = expanded ? `${RECIPE_TOGGLE_LABEL} ▲` : `${RECIPE_TOGGLE_LABEL} ▼`;
   };
   setExpanded(false);
   recipeToggleBtn.addEventListener('click', () => {
@@ -452,7 +448,7 @@ function renderFeedback(result) {
   const issueSummaries = issues.map(issue => issue.message);
   const grammarSummaries = grammarSuggestions.map(item => item.suggestion);
   const topSuggestions = buildTopSuggestions(issueSummaries, grammarSummaries);
-  const topSuggestionTitle = `${TOP_SUGGESTIONS_TITLE_PREFIX} ${topSuggestions.length}개`;
+  const topSuggestionTitle = `${TOP_SUGGESTIONS_TITLE_BASE} ${topSuggestions.length}개`;
   const topSuggestionsHtml = topSuggestions.length > 0
     ? `
       <ul class="feedback-top-list">
