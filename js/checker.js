@@ -252,7 +252,7 @@ function checkAwkwardSentences(text) {
     suggestions.push({ excerpt: safeExcerpt, message, suggestion });
   };
 
-  const mixedParticlePattern = /([가-힣]{1,12}?)(은는|는은|이가|가이|을를|를을)(?=[^가-힣]|$)/g;
+  const mixedParticlePattern = /([가-힣]{1,12})(은는|는은|이가|가이|을를|를을)(?=[^가-힣]|$)/g;
   let particleMatch;
   while ((particleMatch = mixedParticlePattern.exec(text)) !== null) {
     const stem = particleMatch[1];
@@ -264,7 +264,7 @@ function checkAwkwardSentences(text) {
     );
   }
 
-  const repeatedParticlePattern = /([가-힣]{1,12}?)(은|는|이|가|을|를|에)\2(?=[^가-힣]|$)/g;
+  const repeatedParticlePattern = /([가-힣]{1,12})(은|는|이|가|을|를|에)\2(?=[^가-힣]|$)/g;
   let repeatedParticleMatch;
   while ((repeatedParticleMatch = repeatedParticlePattern.exec(text)) !== null) {
     const stem = repeatedParticleMatch[1];
@@ -319,11 +319,14 @@ function checkAwkwardSentences(text) {
   const nominalizationPattern = /([가-힣]{2,20})(을|를)\s+하(?:였다|했다|였습니다|했습니다)/g;
   const nominalizationMatches = [...text.matchAll(nominalizationPattern)];
   if (nominalizationMatches.length >= 2) {
-    const first = nominalizationMatches[0][0];
-    const verbSuggestion = first.replace(/(을|를)\s+하(?:였다|했다|였습니다|했습니다)$/u, '했다');
+    const firstMatch = nominalizationMatches[0];
+    const first = firstMatch[0];
+    const noun = firstMatch[1];
+    const ending = first.match(/하(?:였다|했다|였습니다|했습니다)$/u)?.[0] || '했다';
+    const verbSuggestion = `${noun}${ending}`;
     addSuggestion(
       first,
-      '"~을/를 하다" 표현이 여러 번 보여 번역투처럼 느껴질 수 있어요.',
+      `"~을/를 하다" 표현이 ${nominalizationMatches.length}번 보여 번역투처럼 느껴질 수 있어요.`,
       `가능하면 동사형(예: "${verbSuggestion}")으로 바꿔보세요.`,
     );
   }
