@@ -148,6 +148,24 @@ export const BADGE_DEFS = [
     description: '매일 다정 일기빵으로 5번 글을 구웠어요!',
     check: (state) => ((state.recipeUsage || {})['diary'] || 0) >= 5,
   },
+  {
+    id: 'custom_style_complete',
+    name: '나만의 문체 완성! 🏆',
+    description: '나만의 시그니처 빵을 완성했어요!',
+    check: (state) => Boolean(state.customStyle && state.customStyle.ready),
+  },
+  {
+    id: 'style_fingerprint_first',
+    name: '문체 지문 첫 분석 🔎',
+    description: '내 글 분석 결과를 시그니처 빵에 반영했어요!',
+    check: (state) => Boolean(state.customStyle && state.customStyle.fingerprint && state.customStyle.fingerprint.applied),
+  },
+  {
+    id: 'slider_artisan',
+    name: '슬라이더 장인 🎚️',
+    description: '슬라이더로 문체를 3번 이상 미세 조정했어요!',
+    check: (state) => ((state.customStyle && state.customStyle.sliderAppliedCount) || 0) >= 3,
+  },
 ];
 
 // ─────────────────────────────────────────────

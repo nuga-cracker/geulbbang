@@ -20,6 +20,9 @@
       <h1 class="site-title">🍞 글빵</h1>
       <p class="site-tagline">맛있는 글을 만들어주는 제빵소</p>
     </div>
+    <button id="help-btn" class="btn btn-secondary btn-sm help-btn" aria-label="도움말과 사용법 다시 보기">
+      ❓ 도움말
+    </button>
     <div class="status-bar" aria-label="게임 상태">
       <span id="level-display" class="status-level" aria-live="polite">레벨 1</span>
       <span id="grade-display" class="status-grade" aria-live="polite">🫙 반죽</span>
@@ -66,6 +69,14 @@
     <!-- 글쓰기 영역 -->
     <div class="card">
       <h2 class="card-title">🌾 글 반죽하기</h2>
+      <div class="writing-flow-guide" aria-label="글쓰기 흐름 안내">
+        <h3>🧭 이렇게 하면 쉬워요!</h3>
+        <ol>
+          <li>오늘 있었던 일이나 떠오른 생각을 3~5문장으로 편하게 써요.</li>
+          <li><strong>🔥 빵 굽기</strong>를 눌러 칭찬 + 고치면 좋은 포인트를 받아요.</li>
+          <li>첨삭을 반영해 다시 굽고, 마음에 들면 진열장에 저장해요.</li>
+        </ol>
+      </div>
       <div class="writing-wrapper">
         <textarea
           id="writing-area"
@@ -104,6 +115,72 @@
         <p class="empty-msg">아직 배지가 없어요. 글을 써봐요! 🌾</p>
       </div>
     </div>
+
+    <!-- 나만의 문체 만들기 -->
+    <div class="card custom-style-card">
+      <h2 class="card-title">🏆 나만의 문체 만들기</h2>
+      <p class="custom-style-guide">세 단계를 모두 쓰면 내 문체가 점점 또렷해져요! 설문으로 시작하고, 내 글을 분석한 뒤, 슬라이더로 미세 조정해봐요.</p>
+
+      <section class="custom-style-step" aria-label="설문으로 문체 만들기">
+        <h3>① 📋 설문으로 시작하기</h3>
+        <p>가볍게 고르면 나만의 시그니처 빵 초안이 만들어져요.</p>
+        <div class="custom-form-grid">
+          <label>
+            원하는 분위기
+            <select id="custom-mood">
+              <option value="bright">😄 밝고 재미있게</option>
+              <option value="warm">🌸 따뜻하고 다정하게</option>
+              <option value="calm">🕯️ 차분하고 진지하게</option>
+            </select>
+          </label>
+          <label>
+            문장 스타일
+            <select id="custom-sentence-style">
+              <option value="short">✂️ 짧고 툭툭</option>
+              <option value="flow">🌊 길고 흐르듯이</option>
+              <option value="rhythm">🎵 리듬감 있게</option>
+            </select>
+          </label>
+          <label>
+            말투
+            <select id="custom-tone">
+              <option value="formal">🙋 존댓말</option>
+              <option value="casual">😊 반말</option>
+              <option value="diary">📖 일기처럼</option>
+            </select>
+          </label>
+          <label class="full">
+            자주 쓰고 싶은 단어 (쉼표로 나눠요)
+            <input id="custom-keywords" type="text" placeholder="예: 반짝, 문득, 왠지" />
+          </label>
+        </div>
+        <button id="custom-survey-apply-btn" class="btn btn-secondary btn-sm">설문으로 레시피 만들기</button>
+      </section>
+
+      <section class="custom-style-step" aria-label="내 글 분석으로 문체 업데이트">
+        <h3>② 🔎 내 글 분석하기</h3>
+        <p>지금까지 구운 글을 살펴보고, 내 문체 지문을 뽑아줘요.</p>
+        <div id="style-analysis-result" class="analysis-result">아직 분석 전이에요. 글을 굽고 나서 눌러보세요! 🍞</div>
+        <div class="custom-style-step-actions">
+          <button id="custom-analyze-btn" class="btn btn-secondary btn-sm">내 글 분석하기</button>
+          <button id="custom-analysis-apply-btn" class="btn btn-secondary btn-sm">분석 결과 반영하기</button>
+        </div>
+      </section>
+
+      <section class="custom-style-step" aria-label="슬라이더로 문체 미세 조정">
+        <h3>③ 🎚️ 슬라이더로 미세 조정</h3>
+        <p>지금 기분에 맞게 문체를 살짝 조절해봐요.</p>
+        <div class="slider-group">
+          <label>짧은 문장 ↔ 긴 문장 <input id="slider-length" type="range" min="0" max="100" value="50" /></label>
+          <label>담백함 ↔ 화려함 <input id="slider-richness" type="range" min="0" max="100" value="50" /></label>
+          <label>차분함 ↔ 활발함 <input id="slider-energy" type="range" min="0" max="100" value="50" /></label>
+          <label>진지함 ↔ 유머러스 <input id="slider-humor" type="range" min="0" max="100" value="50" /></label>
+        </div>
+        <div id="slider-preview" class="slider-preview" aria-live="polite"></div>
+        <button id="slider-apply-btn" class="btn btn-secondary btn-sm">슬라이더 반영하기</button>
+      </section>
+    </div>
+
   </div>
 
   <!-- ─── 진열장 패널 ─── -->
@@ -121,6 +198,20 @@
 
 <!-- ───── 토스트 알림 컨테이너 ───── -->
 <div id="toast-container" role="status" aria-live="polite"></div>
+
+<!-- ───── 온보딩/도움말 모달 ───── -->
+<div id="onboarding-modal" class="onboarding-modal hidden" role="dialog" aria-modal="true" aria-labelledby="onboarding-title">
+  <div class="onboarding-content">
+    <div id="onboarding-step-indicator" class="onboarding-step-indicator">1 / 5</div>
+    <h2 id="onboarding-title">🌾 글빵에 오신 걸 환영해요!</h2>
+    <p id="onboarding-message"></p>
+    <div class="onboarding-actions">
+      <button id="onboarding-prev-btn" class="btn btn-secondary btn-sm">이전</button>
+      <button id="onboarding-next-btn" class="btn btn-primary btn-sm">다음</button>
+      <button id="onboarding-skip-btn" class="btn btn-danger btn-sm">건너뛰기</button>
+    </div>
+  </div>
+</div>
 
 <!-- ───── 푸터 ───── -->
 <footer class="site-footer" role="contentinfo">
