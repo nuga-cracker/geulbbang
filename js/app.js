@@ -671,6 +671,15 @@ function buildSliderPreviewText(values) {
 }
 
 function getSliderValues() {
+  if (!sliderLength || !sliderRichness || !sliderEnergy || !sliderHumor) {
+    showToast('슬라이더가 아직 준비되지 않았어요. 새로고침 후 다시 시도해 주세요.', 'warning');
+    return {
+      length: 50,
+      richness: 50,
+      energy: 50,
+      humor: 50,
+    };
+  }
   return {
     length: Number(sliderLength.value),
     richness: Number(sliderRichness.value),
@@ -784,7 +793,8 @@ function handleCustomAnalysisApply() {
   };
   state.customStyle.styleFeatures.sentence = `평균 ${latestFingerprint.avgSentenceLength}자의 ${latestFingerprint.sentenceStyle} 문장`;
   state.customStyle.styleFeatures.tone = `${latestFingerprint.toneTrend} 말투`;
-  state.customStyle.styleFeatures.vocabulary = buildVocabularyText(state.customStyle.sliders.richness, keywords.length > 0 ? keywords : latestFingerprint.topWords.slice(0, 3));
+  const selectedWords = keywords.length > 0 ? keywords : latestFingerprint.topWords.slice(0, 3);
+  state.customStyle.styleFeatures.vocabulary = buildVocabularyText(state.customStyle.sliders.richness, selectedWords);
   state.customStyle.editingGuidelines = [
     `현재 평균 문장 길이(${latestFingerprint.avgSentenceLength}자)를 유지하며 한두 문장만 더 짧게 끊어 리듬을 조절해봐요.`,
     `자주 쓰는 단어(${latestFingerprint.topWords.slice(0, 3).join(', ') || '핵심 단어'})를 의도적으로 배치해 문체를 선명하게 해봐요.`,

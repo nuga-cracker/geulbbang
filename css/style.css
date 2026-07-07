@@ -231,6 +231,12 @@ body {
   color: var(--color-primary-dark);
 }
 
+.writing-flow-guide h3 {
+  font-size: 0.96rem;
+  color: var(--color-primary-dark);
+  margin-bottom: 4px;
+}
+
 .writing-flow-guide ol {
   margin: 8px 0 0 18px;
   display: flex;
@@ -887,7 +893,7 @@ body {
 .onboarding-modal {
   position: fixed;
   inset: 0;
-  background: rgba(38, 22, 8, 0.6);
+  background: rgba(38, 22, 8, 0.78);
   z-index: 10000;
   display: flex;
   align-items: center;
