@@ -3,26 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="글빵 — 맛있는 글을 만들어주는 제빵소. 글쓰기 첨삭 + 성장형 게임 웹앱. 서버·API 없이 무료!" />
-  <title>🍞 글빵 — 맛있는 글을 만들어주는 제빵소</title>
+  <meta name="description" content="글빵 — 초고를 다듬고, 나만의 문체를 키우는 글쓰기 캔버스. 서버·API 없이 무료!" />
+  <title>🍞 글빵 — 나만의 글쓰기 캔버스</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍞</text></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
-<!-- ───── 헤더 ───── -->
+<!-- ───── 앱 바 (헤더) ───── -->
 <header class="site-header" role="banner">
   <div class="header-inner">
-    <div>
+    <!-- 로고 -->
+    <div class="header-brand">
       <h1 class="site-title">🍞 글빵</h1>
-      <p class="site-tagline">맛있는 글을 만들어주는 제빵소</p>
     </div>
-    <button id="help-btn" class="btn btn-secondary btn-sm help-btn" aria-label="도움말과 사용법 다시 보기">
-      ❓ 도움말
-    </button>
+
+    <!-- 상태 표시 (레벨/EXP) -->
     <div class="status-bar" aria-label="게임 상태">
       <span id="level-display" class="status-level" aria-live="polite">레벨 1</span>
       <span id="grade-display" class="status-grade" aria-live="polite">🫙 반죽</span>
@@ -32,6 +31,13 @@
         </div>
         <span id="exp-text" class="exp-text">0 / 100 EXP</span>
       </div>
+    </div>
+
+    <!-- 헤더 우측 액션 -->
+    <div class="header-actions">
+      <button id="help-btn" class="btn btn-secondary btn-sm help-btn" aria-label="도움말과 사용법 다시 보기">
+        ❓ 도움말
+      </button>
     </div>
   </div>
 </header>
@@ -58,7 +64,7 @@
     <!-- 레시피 선택 -->
     <div class="recipe-selector-section" aria-label="문체 레시피 선택">
       <div class="recipe-selector-header">
-        <span class="recipe-selector-title">🍽️ 오늘은 어떤 작가처럼 구울까요?</span>
+        <span class="recipe-selector-title">🍽️ 오늘은 어떤 문체로 써볼까요?</span>
       </div>
       <div id="recipe-cards" class="recipe-cards" role="listbox" aria-label="문체 레시피 목록">
         <!-- JS로 렌더링 -->
@@ -68,9 +74,9 @@
 
     <!-- 글쓰기 영역 -->
     <div class="card">
-      <h2 class="card-title">🌾 글 반죽하기</h2>
+      <h2 class="card-title">✍️ 글 쓰기</h2>
       <div class="writing-flow-guide" aria-label="글쓰기 흐름 안내">
-        <h3>🧭 이렇게 하면 쉬워요!</h3>
+        <h3>💡 이렇게 하면 쉬워요</h3>
         <ol>
           <li>오늘 있었던 일이나 떠오른 생각을 3~5문장으로 편하게 써요.</li>
           <li><strong>🔥 빵 굽기</strong>를 눌러 칭찬 + 고치면 좋은 포인트를 받아요.</li>
@@ -81,7 +87,7 @@
         <textarea
           id="writing-area"
           class="writing-area"
-          placeholder="여기에 글을 써보세요. 길든 짧든 괜찮아요! 투박한 초고(반죽)여도 좋아요. 쓰고 나서 '빵 굽기' 버튼을 눌러봐요! 🍞"
+          placeholder="여기에 글을 써보세요. 투박한 초고여도 괜찮아요. 쓰고 나서 '빵 굽기' 버튼을 눌러봐요! 🍞"
           aria-label="글쓰기 영역"
           rows="10"
         ></textarea>
@@ -96,7 +102,7 @@
 
     <!-- 첨삭 피드백 -->
     <div id="feedback-section" class="card hidden" aria-live="polite" aria-label="첨삭 결과">
-      <h2 class="card-title">👨‍🍳 선생님 첨삭 결과</h2>
+      <h2 class="card-title">👨‍🍳 첨삭 결과</h2>
       <div id="feedback-content"></div>
     </div>
 
@@ -187,7 +193,7 @@
   <div id="panel-portfolio" class="tab-panel hidden" role="tabpanel">
     <div class="card">
       <h2 class="card-title">🗂️ 내 빵 진열장</h2>
-      <p style="font-size:0.88rem;color:var(--color-text-light);margin-bottom:14px;">첨삭 후 "진열장에 추가" 버튼을 눌러 완성한 글을 저장해 보세요!</p>
+      <p style="font-size:0.85rem;color:var(--color-text-light);margin-bottom:14px;">첨삭 후 "진열장에 추가" 버튼을 눌러 완성한 글을 저장해 보세요!</p>
       <div id="portfolio-list" class="portfolio-list" aria-label="완성한 글 목록">
         <p class="empty-msg">아직 완성한 빵이 없어요. 글을 쓰고 진열장에 추가해봐요! 🍞</p>
       </div>
@@ -202,6 +208,13 @@
 <!-- ───── 온보딩/도움말 모달 ───── -->
 <div id="onboarding-modal" class="onboarding-modal hidden" role="dialog" aria-modal="true" aria-labelledby="onboarding-title">
   <div class="onboarding-content">
+    <div id="onboarding-dots" class="onboarding-dots" aria-hidden="true">
+      <span class="onboarding-dot active"></span>
+      <span class="onboarding-dot"></span>
+      <span class="onboarding-dot"></span>
+      <span class="onboarding-dot"></span>
+      <span class="onboarding-dot"></span>
+    </div>
     <div id="onboarding-step-indicator" class="onboarding-step-indicator">1 / 5</div>
     <h2 id="onboarding-title">🌾 글빵에 오신 걸 환영해요!</h2>
     <p id="onboarding-message"></p>
@@ -215,7 +228,7 @@
 
 <!-- ───── 푸터 ───── -->
 <footer class="site-footer" role="contentinfo">
-  <p>🍞 글빵 (GeulBbang) — 맛있는 글을 만들어주는 제빵소</p>
+  <p>🍞 글빵 (GeulBbang) — 초고를 다듬고, 나만의 문체를 키우는 글쓰기 캔버스</p>
   <p style="margin-top:4px;">💸 유지비 0원 · 서버 없음 · API 키 불필요 · <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a>로 무료 배포</p>
 </footer>
 

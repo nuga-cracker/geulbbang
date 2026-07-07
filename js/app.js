@@ -879,6 +879,15 @@ function renderOnboardingStep() {
   onboardingMessage.textContent = step.message;
   onboardingPrevBtn.disabled = onboardingStep === 0;
   onboardingNextBtn.textContent = onboardingStep === ONBOARDING_STEPS.length - 1 ? '시작하기! 🚀' : '다음';
+
+  // 온보딩 점 표시 업데이트
+  const dotsContainer = document.getElementById('onboarding-dots');
+  if (dotsContainer) {
+    const dots = dotsContainer.querySelectorAll('.onboarding-dot');
+    dots.forEach((dot, i) => {
+      dot.classList.toggle('active', i === onboardingStep);
+    });
+  }
 }
 
 function closeOnboarding(markDone = true) {
