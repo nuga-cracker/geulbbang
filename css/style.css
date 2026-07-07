@@ -322,19 +322,114 @@ body {
   background: var(--color-warning-bg);
   border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-lg);
-  padding: 12px var(--space-md);
+  padding: var(--space-md);
   margin-bottom: var(--space-md);
   display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.daily-prompt-header {
+  display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: var(--space-sm);
   flex-wrap: wrap;
 }
 
+.daily-prompt-label {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-secondary-dark);
+}
+
+.daily-prompt-pills {
+  display: flex;
+  gap: var(--space-xs);
+  flex-wrap: wrap;
+}
+
+.prompt-pill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.prompt-pill-category {
+  background: var(--color-primary-subtle);
+  color: var(--color-secondary-dark);
+  border: 1px solid var(--color-primary);
+}
+
+.prompt-pill-difficulty--쉬움 {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #a5d6a7;
+}
+
+.prompt-pill-difficulty--보통 {
+  background: #fff8e1;
+  color: #e65100;
+  border: 1px solid #ffcc02;
+}
+
+.prompt-pill-difficulty--어려움 {
+  background: #fce4ec;
+  color: #880e4f;
+  border: 1px solid #f48fb1;
+}
+
 .daily-prompt-text {
   font-size: var(--font-size-base);
+  color: var(--color-text-strong);
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.daily-prompt-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.daily-prompt-goal,
+.daily-prompt-starter {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.daily-prompt-actions {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.prompt-hint-note {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-light);
+  margin-top: 2px;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border-strong);
+  padding: 4px 10px;
+  border-radius: var(--radius);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.btn-ghost:hover {
+  background: var(--color-hover-subtle);
   color: var(--color-text);
-  font-weight: 500;
+  border-color: var(--color-primary-dark);
 }
 
 .card {

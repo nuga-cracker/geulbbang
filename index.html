@@ -73,15 +73,28 @@
 
       <!-- 오늘의 글감 -->
       <div class="daily-prompt-bar" aria-label="오늘의 글감">
-        <span id="daily-prompt" class="daily-prompt-text">📝 오늘의 글감 불러오는 중...</span>
-        <button id="daily-use-btn" class="btn btn-secondary btn-sm">이 주제로 쓰기</button>
+        <div class="daily-prompt-header">
+          <span class="daily-prompt-label">📝 오늘의 글감</span>
+          <div class="daily-prompt-pills" id="daily-prompt-pills" aria-hidden="true"></div>
+        </div>
+        <p id="daily-prompt" class="daily-prompt-text">글감 불러오는 중...</p>
+        <div class="daily-prompt-meta" id="daily-prompt-meta" aria-hidden="true">
+          <span class="daily-prompt-goal" id="daily-prompt-goal"></span>
+          <span class="daily-prompt-starter" id="daily-prompt-starter"></span>
+        </div>
+        <div class="daily-prompt-actions">
+          <button id="daily-use-btn" class="btn btn-secondary btn-sm">이 주제로 쓰기</button>
+          <button id="daily-next-btn" class="btn btn-ghost btn-sm">다른 글감 보기 🎲</button>
+          <button id="daily-template-btn" class="btn btn-ghost btn-sm">3문장 틀 넣기 ✏️</button>
+        </div>
+        <p class="prompt-hint-note">💡 처음엔 3문장만 써도 충분해요.</p>
       </div>
 
       <div class="writing-wrapper">
         <textarea
           id="writing-area"
           class="writing-area"
-          placeholder="여기에 글을 써보세요. 투박한 초고여도 괜찮아요. 쓰고 나서 '빵 굽기' 버튼을 눌러봐요! 🍞"
+          placeholder="첫 문장만 써도 괜찮아요.&#10;예) 오늘은 이상하게 빵 냄새가 생각났다..."
           aria-label="글쓰기 영역"
           rows="10"
         ></textarea>
