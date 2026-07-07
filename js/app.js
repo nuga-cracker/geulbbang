@@ -439,11 +439,17 @@ function renderFeedback(result) {
         <ul class="feedback-grammar-list">
     `;
     grammarSuggestions.forEach(item => {
+      const applyBtnHtml = item.replacement
+        ? `<button class="apply-suggestion-btn"
+                  data-from="${escapeHtml(item.replacement.from)}"
+                  data-to="${escapeHtml(item.replacement.to)}">이 제안 적용하기</button>`
+        : '';
       html += `
         <li class="feedback-grammar-item">
           <p class="feedback-grammar-source">원문: ${escapeHtml(item.excerpt)}</p>
           <p class="feedback-grammar-message">${escapeHtml(item.message)}</p>
           <p class="feedback-grammar-suggestion">→ ${escapeHtml(item.suggestion)}</p>
+          ${applyBtnHtml}
         </li>
       `;
     });
@@ -478,6 +484,22 @@ function renderFeedback(result) {
   feedbackSection.classList.remove('hidden');
   document.getElementById('save-to-portfolio-btn').addEventListener('click', () => {
     saveToPortfolio(result);
+  });
+  feedbackContent.querySelectorAll('.apply-suggestion-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const from = btn.dataset.from;
+      const to = btn.dataset.to;
+      const current = textArea.value;
+      if (current.includes(from)) {
+        textArea.value = current.replaceAll(from, to);
+        btn.textContent = '✅ 적용 완료';
+        btn.disabled = true;
+        btn.classList.add('apply-suggestion-done');
+        showToast('제안을 반영했어요. 다시 빵 굽기를 눌러 확인해보세요! 🍞', 'success');
+      } else {
+        showToast('이미 반영됐거나 원문이 바뀌었어요.', 'warning');
+      }
+    });
   });
 }
 

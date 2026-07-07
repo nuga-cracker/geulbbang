@@ -247,7 +247,7 @@ function checkAwkwardSentences(text) {
   const MAX_PROBLEM_PATTERN_SPAN = 70;
   const MIN_PROBLEM_PATTERN_REPEAT = 2;
 
-  const addSuggestion = (excerpt, message, suggestion) => {
+  const addSuggestion = (excerpt, message, suggestion, replacement = null) => {
     const safeExcerpt = String(excerpt || '').trim();
     const safeMessage = String(message || '').trim();
     const safeSuggestion = String(suggestion || '').trim();
@@ -255,7 +255,11 @@ function checkAwkwardSentences(text) {
     const key = `${safeExcerpt}|${safeMessage}|${safeSuggestion}`;
     if (dedupe.has(key)) return;
     dedupe.add(key);
-    suggestions.push({ excerpt: safeExcerpt, message: safeMessage, suggestion: safeSuggestion });
+    const item = { excerpt: safeExcerpt, message: safeMessage, suggestion: safeSuggestion };
+    if (replacement && replacement.from && replacement.to && replacement.from !== replacement.to) {
+      item.replacement = { from: replacement.from, to: replacement.to };
+    }
+    suggestions.push(item);
   };
 
   const mixedParticlePattern = new RegExp(
@@ -270,6 +274,7 @@ function checkAwkwardSentences(text) {
       particleMatch[0],
       '조사가 겹쳐 보여 비문일 수 있어요.',
       `"${stem}${pair[0]}"처럼 조사 하나만 남기면 더 자연스러워요.`,
+      { from: particleMatch[0], to: stem + pair[0] },
     );
   }
 
@@ -285,6 +290,7 @@ function checkAwkwardSentences(text) {
       repeatedParticleMatch[0],
       '조사가 반복되어 비문일 수 있어요.',
       `"${stem}${particle}"처럼 조사 하나만 남기면 더 자연스러워요.`,
+      { from: repeatedParticleMatch[0], to: stem + particle },
     );
   }
 
@@ -295,6 +301,7 @@ function checkAwkwardSentences(text) {
       connectiveMatch[0],
       `"${connectiveMatch[1]}"가 반복되어 문장이 어색해 보일 수 있어요.`,
       `"${connectiveMatch[1]}"를 한 번만 써도 흐름이 더 자연스러워요.`,
+      { from: connectiveMatch[0], to: connectiveMatch[1] },
     );
   }
 
@@ -305,6 +312,7 @@ function checkAwkwardSentences(text) {
       endingMatch[0],
       '종결 표현이 이어져 보여 문장이 끊겨 읽힐 수 있어요.',
       `같은 어미를 한 번만 남기거나 앞 문장을 다른 표현으로 바꿔보세요.`,
+      { from: endingMatch[0], to: endingMatch[1] },
     );
   }
 

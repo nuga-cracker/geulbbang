@@ -835,6 +835,37 @@ body {
   font-weight: 600;
 }
 
+.apply-suggestion-btn {
+  display: inline-block;
+  margin-top: var(--space-sm);
+  padding: 3px 12px;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-primary-dark);
+  background: var(--color-primary-subtle);
+  border: 1.5px solid var(--color-primary-dark);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+}
+
+.apply-suggestion-btn:hover,
+.apply-suggestion-btn:focus {
+  background: var(--color-primary);
+  color: var(--color-text-strong);
+  outline: 2px solid var(--color-primary-dark);
+  outline-offset: 2px;
+}
+
+.apply-suggestion-btn:disabled,
+.apply-suggestion-btn.apply-suggestion-done {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+  border-color: var(--color-success);
+  cursor: default;
+  opacity: 0.85;
+}
+
 .feedback-actions {
   text-align: center;
   margin-top: var(--space-md);
