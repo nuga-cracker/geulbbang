@@ -20,6 +20,9 @@ const DEFAULT_STATE = {
   lastDailyDate: null,        // 마지막 오늘의 빵 완료 날짜
   selectedRecipe: 'free',     // 마지막으로 선택한 문체 레시피 ID ('free' = 자유롭게)
   recipeUsage: {},            // 문체 레시피별 사용 횟수 { recipeId: count }
+  onboardingDone: false,      // 첫 방문 온보딩 완료 여부
+  customStyle: null,          // 나만의 시그니처 빵 프로필
+  writingHistory: [],         // 빵 굽기한 글 기록
 };
 
 /**

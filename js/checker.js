@@ -105,6 +105,12 @@ function tokenizeWords(text) {
     .filter(w => w.length > 0);
 }
 
+const STYLE_STOPWORDS = new Set([
+  '그리고', '그래서', '하지만', '그러나', '또', '또한', '그런데', '저는', '나는', '내가', '제가', '우리', '너무',
+  '정말', '진짜', '아주', '매우', '이다', '있다', '없다', '했다', '한다', '한다면', '같다', '것', '수', '이', '그', '저',
+  '오늘', '요즘', '에서', '에게', '으로', '까지', '부터', '하면', '하며', '하고', '하는', '했다', '했다가',
+]);
+
 // ─────────────────────────────────────────────
 // 규칙 검사 함수들
 // ─────────────────────────────────────────────
@@ -332,4 +338,55 @@ export function analyzeText(text, revisionCount = 0) {
   const praise = generatePraise(score, stats, allIssues);
 
   return { issues: allIssues, stats, score, praise };
+}
+
+/**
+ * 여러 글을 바탕으로 문체 지문을 추출합니다.
+ * @param {string[]} texts
+ * @returns {{avgSentenceLength:number,sentenceStyle:string,topWords:string[],questionCount:number,exclamationCount:number,toneTrend:string,formalCount:number,informalCount:number,sampleSize:number}}
+ */
+export function analyzeWritingFingerprint(texts = []) {
+  const validTexts = texts.filter(t => typeof t === 'string' && t.trim().length > 0);
+  const merged = validTexts.join('\n');
+  const sentences = splitSentences(merged);
+  const sentenceLengths = sentences.map(s => s.replace(/\s/g, '').length);
+  const avgSentenceLength = sentenceLengths.length
+    ? Math.round(sentenceLengths.reduce((sum, len) => sum + len, 0) / sentenceLengths.length)
+    : 0;
+  const sentenceStyle = avgSentenceLength < 25 ? '짧고 경쾌한 편' : avgSentenceLength < 45 ? '균형 잡힌 편' : '길고 흐르듯한 편';
+
+  const words = tokenizeWords(merged);
+  const freq = {};
+  words.forEach(word => {
+    const cleaned = word.trim().toLowerCase();
+    if (cleaned.length < 2) return;
+    if (STYLE_STOPWORDS.has(cleaned)) return;
+    freq[cleaned] = (freq[cleaned] || 0) + 1;
+  });
+  const topWords = Object.entries(freq)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([word]) => word);
+
+  const questionCount = (merged.match(/\?/g) || []).length;
+  const exclamationCount = (merged.match(/!/g) || []).length;
+  const formalCount = (merged.match(/(?:습니다|습니까|어요|아요|네요|겠습니다)(?=[.!?\s]|$)/g) || []).length;
+  const informalCount = (merged.match(/(?:했다|한다|이다|갔다|왔다|봤다|먹었다|썼다|있다|없다|좋다|싫다)(?=[.!?\s]|$)/g) || []).length;
+  const toneTrend = formalCount === informalCount
+    ? '균형형'
+    : formalCount > informalCount
+      ? '존댓말 중심'
+      : '반말 중심';
+
+  return {
+    avgSentenceLength,
+    sentenceStyle,
+    topWords,
+    questionCount,
+    exclamationCount,
+    toneTrend,
+    formalCount,
+    informalCount,
+    sampleSize: validTexts.length,
+  };
 }
