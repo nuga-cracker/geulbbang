@@ -372,7 +372,7 @@ function handleRecipeSelect(recipeId) {
 
 function updateRecipeSelectorSummary() {
   if (!recipeSelectedLabel) return;
-  const selectedProfile = getRecipeProfile(state.selectedRecipe);
+  const selectedProfile = getRecipeProfile(state.selectedRecipe || 'free');
   recipeSelectedLabel.textContent = selectedProfile?.name || '✨ 자유롭게';
 }
 
@@ -444,7 +444,7 @@ function renderFeedback(result) {
         오늘의 맛있음 점수: <strong>${score}점</strong>
       </div>
       <div class="feedback-top">
-        <p class="feedback-top-title">가장 먼저 보면 좋은 제안 ${topSuggestions.length || 0}개</p>
+        <p class="feedback-top-title">가장 먼저 보면 좋은 제안 ${topSuggestions.length}개</p>
         ${topSuggestionsHtml}
       </div>
     </div>

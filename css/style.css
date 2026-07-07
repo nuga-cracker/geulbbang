@@ -385,6 +385,8 @@ body {
 }
 
 .bread-mascot.mini-inline {
+  --mini-eye-offset: 11px;
+  --mini-cheek-offset: 7px;
   width: 36px;
   height: 31px;
 }
@@ -395,8 +397,8 @@ body {
   height: 5px;
 }
 
-.bread-mascot.mini-inline .mascot-eye.left { left: 11px; }
-.bread-mascot.mini-inline .mascot-eye.right { right: 11px; }
+.bread-mascot.mini-inline .mascot-eye.left { left: var(--mini-eye-offset); }
+.bread-mascot.mini-inline .mascot-eye.right { right: var(--mini-eye-offset); }
 .bread-mascot.mini-inline .mascot-smile {
   top: 17px;
   width: 10px;
@@ -407,8 +409,8 @@ body {
   width: 6px;
   height: 4px;
 }
-.bread-mascot.mini-inline .mascot-cheek.left { left: 7px; }
-.bread-mascot.mini-inline .mascot-cheek.right { right: 7px; }
+.bread-mascot.mini-inline .mascot-cheek.left { left: var(--mini-cheek-offset); }
+.bread-mascot.mini-inline .mascot-cheek.right { right: var(--mini-cheek-offset); }
 
 .bread-mascot,
 .dough-mascot {
