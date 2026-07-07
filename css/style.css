@@ -1,46 +1,49 @@
 /* ─────────────────────────────────────────────
-   style.css — 글빵 Figma-inspired 디자인 시스템
-   깔끔하고 모던한 생산성 툴 스타일 (v2.0)
+   style.css — 글빵 디자인 시스템
+   깔끔한 카드형 UI + 따뜻한 제빵소 톤 (v2.1)
    ───────────────────────────────────────────── */
 
 /* 기본 초기화 & 변수 */
 :root {
   /* 배경 */
-  --color-bg: #f0f0f0;
-  --color-bg2: #f8f8f8;
-  --color-surface: #ffffff;
+  --color-bg: #fff8ea;
+  --color-bg2: #fffdf7;
+  --color-surface: #fffefb;
 
-  /* Figma 포인트 컬러 */
-  --color-primary: #0d99ff;
-  --color-primary-dark: #0077cc;
-  --color-primary-subtle: #e8f5ff;
-  --color-secondary: #a259ff;
-  --color-secondary-dark: #7b39cc;
-  --color-secondary-subtle: #f2eaff;
-  --color-accent-green: #0acf83;
-  --color-accent-orange: #ff7262;
+  /* 따뜻한 포인트 컬러 */
+  --color-primary: #f7c948;
+  --color-primary-dark: #d97706;
+  --color-primary-dark-rgb: 217, 119, 6;
+  --color-primary-subtle: #fff1bf;
+  --color-secondary: #d97706;
+  --color-secondary-dark: #92400e;
+  --color-secondary-dark-rgb: 146, 64, 14;
+  --color-secondary-subtle: #fff1d6;
+  --color-accent-green: #8ea660;
+  --color-accent-orange: #ffd166;
 
   /* 텍스트 */
-  --color-text: #1a1a1a;
-  --color-text-secondary: #555555;
-  --color-text-light: #888888;
+  --color-text-strong: #2b1607;
+  --color-text: #4a2f14;
+  --color-text-secondary: #7a5a33;
+  --color-text-light: #9a7b52;
 
   /* 카드/보더 */
-  --color-card: #ffffff;
-  --color-border: #e5e5e5;
-  --color-border-strong: #cccccc;
+  --color-card: #fffefb;
+  --color-border: #f3d9a4;
+  --color-border-strong: #e8c98a;
 
   /* 시맨틱 컬러 */
-  --color-success: #0acf83;
-  --color-success-bg: #edfcf5;
-  --color-warning: #f5a623;
-  --color-warning-bg: #fff8ec;
-  --color-danger: #f24e1e;
-  --color-danger-bg: #fff2ed;
-  --color-info: #0d99ff;
-  --color-info-bg: #e8f5ff;
-  --color-exp: #a259ff;
-  --color-focus-ring: rgba(13,153,255,0.12);
+  --color-success: #7c8f4e;
+  --color-success-bg: #f3f6e6;
+  --color-warning: #d97706;
+  --color-warning-bg: #fff4d6;
+  --color-danger: #c26b3f;
+  --color-danger-bg: #fff1e7;
+  --color-info: #b7791f;
+  --color-info-bg: #fff3df;
+  --color-exp: #d97706;
+  --color-focus-ring: rgba(247, 201, 72, 0.28);
 
   /* 형태 */
   --radius-sm: 6px;
@@ -50,11 +53,11 @@
   --radius-pill: 999px;
 
   /* 그림자 */
-  --shadow-xs: 0 1px 2px rgba(0,0,0,0.05);
-  --shadow-sm: 0 1px 4px rgba(0,0,0,0.08);
-  --shadow: 0 2px 8px rgba(0,0,0,0.10);
-  --shadow-md: 0 4px 16px rgba(0,0,0,0.12);
-  --shadow-lg: 0 8px 32px rgba(0,0,0,0.14);
+  --shadow-xs: 0 1px 2px rgba(146, 64, 14, 0.06);
+  --shadow-sm: 0 2px 6px rgba(146, 64, 14, 0.08);
+  --shadow: 0 4px 12px rgba(146, 64, 14, 0.10);
+  --shadow-md: 0 8px 20px rgba(146, 64, 14, 0.12);
+  --shadow-lg: 0 14px 36px rgba(146, 64, 14, 0.16);
 
   /* 간격 */
   --space-xs: 4px;
@@ -228,7 +231,7 @@ body {
    히어로 배너
    ───────────────────────────────────────────── */
 .hero-banner {
-  background: linear-gradient(135deg, #0d99ff 0%, #a259ff 100%);
+  background: linear-gradient(135deg, #f7c948 0%, #d97706 100%);
   border-radius: var(--radius-xl);
   padding: var(--space-xl) var(--space-xl);
   margin-bottom: var(--space-lg);
@@ -307,7 +310,7 @@ body {
 
 .tab-btn.active {
   background: var(--color-primary);
-  color: white;
+  color: var(--color-text-strong);
   box-shadow: var(--shadow-sm);
 }
 
@@ -316,7 +319,7 @@ body {
    ───────────────────────────────────────────── */
 .daily-prompt-bar {
   background: var(--color-warning-bg);
-  border: 1px solid #f5d078;
+  border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-lg);
   padding: 12px var(--space-md);
   margin-bottom: var(--space-md);
@@ -363,7 +366,7 @@ body {
 
 .writing-flow-guide {
   background: var(--color-primary-subtle);
-  border: 1px solid #c3e0f8;
+  border: 1px solid var(--color-border-strong);
   border-radius: var(--radius);
   padding: 12px var(--space-md);
   margin-bottom: var(--space-sm);
@@ -458,15 +461,16 @@ body {
 
 .btn-primary {
   background: var(--color-primary);
-  color: white;
+  color: var(--color-text-strong);
   border-color: var(--color-primary);
-  box-shadow: 0 2px 8px rgba(13,153,255,0.30);
+  box-shadow: 0 2px 8px rgba(var(--color-primary-dark-rgb), 0.24);
 }
 
 .btn-primary:hover {
   background: var(--color-primary-dark);
+  color: var(--color-text-strong);
   border-color: var(--color-primary-dark);
-  box-shadow: 0 4px 12px rgba(13,153,255,0.40);
+  box-shadow: 0 4px 12px rgba(var(--color-secondary-dark-rgb), 0.24);
   transform: translateY(-1px);
 }
 
@@ -516,7 +520,7 @@ body {
   align-items: flex-start;
   gap: var(--space-sm);
   background: var(--color-primary-subtle);
-  border: 1px solid #c3e0f8;
+  border: 1px solid var(--color-border-strong);
   border-radius: var(--radius);
   padding: var(--space-md);
   margin-bottom: var(--space-md);
@@ -589,17 +593,17 @@ body {
 
 .feedback-issue.severity-high   {
   background: var(--color-danger-bg);
-  border-color: #ffd5c8;
+  border-color: #efc5aa;
   border-left: 3px solid var(--color-danger);
 }
 .feedback-issue.severity-medium {
   background: var(--color-warning-bg);
-  border-color: #fce6aa;
+  border-color: #f0cd84;
   border-left: 3px solid var(--color-warning);
 }
 .feedback-issue.severity-low    {
   background: var(--color-info-bg);
-  border-color: #c3e0f8;
+  border-color: #efcfaa;
   border-left: 3px solid var(--color-info);
 }
 
@@ -622,7 +626,7 @@ body {
 .feedback-encourage {
   text-align: center;
   font-size: var(--font-size-sm);
-  color: var(--color-primary);
+  color: var(--color-primary-dark);
   font-weight: 500;
   margin: var(--space-sm) 0;
 }
@@ -654,7 +658,7 @@ body {
 
 .badge-item {
   background: var(--color-secondary-subtle);
-  border: 1px solid #ddc8ff;
+  border: 1px solid var(--color-border);
   border-radius: var(--radius);
   padding: 10px var(--space-md);
   display: flex;
@@ -799,10 +803,11 @@ body {
 
 .toast-success  { background: #1a8a5e; }
 .toast-warning  { background: #b07515; }
-.toast-info     { background: var(--color-primary); }
-.toast-exp      { background: var(--color-secondary); }
+.toast-info     { background: var(--color-primary); color: var(--color-text-strong); }
+.toast-exp      { background: var(--color-secondary); color: var(--color-text-strong); }
 .toast-levelup  {
   background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  color: var(--color-text-strong);
   font-size: var(--font-size-base);
   padding: 12px 22px;
 }
@@ -900,8 +905,8 @@ body {
 .recipe-card.selected {
   background: var(--color-primary);
   border-color: var(--color-primary);
-  color: white;
-  box-shadow: 0 2px 8px rgba(13,153,255,0.30);
+  color: var(--color-text-strong);
+  box-shadow: 0 2px 8px rgba(var(--color-primary-dark-rgb), 0.24);
 }
 
 .recipe-card-name {
@@ -929,7 +934,7 @@ body {
 /* 문체 레시피 피드백 섹션 */
 .recipe-feedback-section {
   background: var(--color-secondary-subtle);
-  border: 1px solid #ddc8ff;
+  border: 1px solid var(--color-border);
   border-radius: var(--radius);
   padding: var(--space-md);
   margin: var(--space-sm) 0;
@@ -973,8 +978,8 @@ body {
 
 /* 나만의 문체 카드 */
 .custom-style-card {
-  border: 1.5px solid #ddc8ff;
-  background: linear-gradient(180deg, #fefcff, var(--color-secondary-subtle));
+  border: 1.5px solid var(--color-border);
+  background: linear-gradient(180deg, #fffef8, var(--color-secondary-subtle));
 }
 
 .custom-style-guide {
@@ -1045,7 +1050,7 @@ body {
 
 .analysis-result {
   background: var(--color-info-bg);
-  border: 1px solid #c3e0f8;
+  border: 1px solid var(--color-border-strong);
   color: var(--color-primary-dark);
   border-radius: var(--radius);
   padding: 10px var(--space-sm);
@@ -1085,7 +1090,7 @@ body {
   border-radius: var(--radius);
   padding: 10px var(--space-sm);
   background: var(--color-secondary-subtle);
-  border: 1px solid #ddc8ff;
+  border: 1px solid var(--color-border);
   font-size: var(--font-size-sm);
   color: var(--color-secondary-dark);
 }
