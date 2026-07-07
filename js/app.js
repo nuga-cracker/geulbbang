@@ -36,7 +36,7 @@ const dailyPromptEl = document.getElementById('daily-prompt');
 const resetBtn      = document.getElementById('reset-btn');
 const toastContainer = document.getElementById('toast-container');
 const dailyUseBreadBtn = document.getElementById('daily-use-btn');
-const recipCardsEl  = document.getElementById('recipe-cards');
+const recipeCardsEl  = document.getElementById('recipe-cards');
 
 // ─────────────────────────────────────────────
 // 유틸: 토스트 메시지 표시
@@ -119,8 +119,8 @@ function updateDailyPrompt() {
 // 레시피 카드 렌더링
 // ─────────────────────────────────────────────
 function renderRecipeCards() {
-  if (!recipCardsEl) return;
-  recipCardsEl.innerHTML = '';
+  if (!recipeCardsEl) return;
+  recipeCardsEl.innerHTML = '';
 
   // '자유롭게' 카드 (선택 안 함)
   const freeCard = createRecipeCard({
@@ -128,12 +128,12 @@ function renderRecipeCards() {
     name: '✨ 자유롭게',
     mood: '나만의 스타일로 자유롭게!',
   }, state.selectedRecipe === 'free');
-  recipCardsEl.appendChild(freeCard);
+  recipeCardsEl.appendChild(freeCard);
 
   // 작가 카드
   AUTHORS.forEach(author => {
     const card = createRecipeCard(author, state.selectedRecipe === author.id);
-    recipCardsEl.appendChild(card);
+    recipeCardsEl.appendChild(card);
   });
 }
 
