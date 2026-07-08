@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="글빵 — 초고를 다듬고, 나만의 문체를 키우는 따뜻한 글쓰기 캔버스." />
+  <meta name="description" content="글빵 — 초고를 다듬고, 나만의 글빵 레시피를 키우는 따뜻한 글쓰기 캔버스." />
   <title>🍞 글빵 — 나만의 글쓰기 캔버스</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍞</text></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -130,25 +130,25 @@
           </button>
         </div>
 
-        <p class="write-core-note">💡 문체 레시피와 시그니처 문체는 아래에서 필요할 때 펼쳐 선택할 수 있어요.</p>
+        <p class="write-core-note">💡 글빵 레시피와 시그니처 레시피는 아래에서 필요할 때 펼쳐 선택할 수 있어요.</p>
       </div>
 
     </div><!-- /.bakery-workshop-card -->
 
     <!-- 레시피 선택 -->
-    <div class="recipe-selector-section" aria-label="문체 레시피 선택">
+    <div class="recipe-selector-section" aria-label="글빵 레시피 선택">
       <div class="recipe-selector-header">
         <button id="recipe-toggle-btn" class="recipe-toggle-btn" type="button" aria-expanded="false" aria-controls="recipe-selector-content">
-          문체 레시피 선택하기 ▼
+          글빵 레시피 선택하기 ▼
         </button>
         <p class="recipe-selected-now">현재 선택: <strong id="recipe-selected-label">✨ 자유롭게</strong></p>
       </div>
       <div id="recipe-selector-content" class="recipe-selector-content hidden">
-        <div id="recipe-cards" class="recipe-cards" role="listbox" aria-label="문체 레시피 목록">
+        <div id="recipe-cards" class="recipe-cards" role="listbox" aria-label="글빵 레시피 목록">
           <!-- JS로 렌더링 -->
         </div>
-        <p class="signature-style-hint">🏆 지금은 빠르게 레시피만 골라 쓰고, 내 문체를 세밀하게 만들고 싶을 때는 <strong>배지 탭</strong>의 “나만의 문체 만들기”를 이용해보세요.</p>
-        <p class="recipe-copyright-notice">📌 저작권 만료 작가의 문체 특징만 활용하며, 현대 작가는 분위기만 참고합니다.</p>
+        <p class="signature-style-hint">🏆 지금은 빠르게 레시피만 골라 쓰고, 내 글빵 레시피를 세밀하게 만들고 싶을 때는 <strong>배지 탭</strong>의 "나만의 글빵 레시피 만들기"를 이용해보세요.</p>
+        <p class="recipe-copyright-notice">📌 저작권 만료 작가의 글빵 레시피 특징만 활용하며, 현대 작가는 분위기만 참고합니다.</p>
       </div>
     </div>
 
@@ -176,10 +176,10 @@
 
     <!-- 나만의 문체 만들기 -->
     <div class="card custom-style-card">
-      <h2 class="card-title">🏆 나만의 문체 만들기</h2>
-      <p class="custom-style-guide">세 단계를 모두 쓰면 내 문체가 점점 또렷해져요! 설문으로 시작하고, 내 글을 분석한 뒤, 슬라이더로 미세 조정해봐요.</p>
+      <h2 class="card-title">🏆 나만의 글빵 레시피 만들기</h2>
+      <p class="custom-style-guide">세 단계를 모두 쓰면 내 글빵 레시피가 점점 또렷해져요! 설문으로 시작하고, 내 글을 분석한 뒤, 슬라이더로 미세 조정해봐요.</p>
 
-      <section class="custom-style-step" aria-label="설문으로 문체 만들기">
+      <section class="custom-style-step" aria-label="설문으로 글빵 레시피 만들기">
         <h3>① 📋 설문으로 시작하기</h3>
         <p>가볍게 고르면 나만의 시그니처 빵 초안이 만들어져요.</p>
         <div class="custom-form-grid">
@@ -215,9 +215,9 @@
         <button id="custom-survey-apply-btn" class="btn btn-secondary btn-sm">설문으로 레시피 만들기</button>
       </section>
 
-      <section class="custom-style-step" aria-label="내 글 분석으로 문체 업데이트">
+      <section class="custom-style-step" aria-label="내 글 분석으로 글빵 레시피 업데이트">
         <h3>② 🔎 내 글 분석하기</h3>
-        <p>지금까지 구운 글을 살펴보고, 내 문체 지문을 뽑아줘요.</p>
+        <p>지금까지 구운 글을 살펴보고, 내 글빵 레시피 지문을 뽑아줘요.</p>
         <div id="style-analysis-result" class="analysis-result">아직 분석 전이에요. 글을 굽고 나서 눌러보세요! 🍞</div>
         <div class="custom-style-step-actions">
           <button id="custom-analyze-btn" class="btn btn-secondary btn-sm">내 글 분석하기</button>
@@ -225,9 +225,9 @@
         </div>
       </section>
 
-      <section class="custom-style-step" aria-label="슬라이더로 문체 미세 조정">
+      <section class="custom-style-step" aria-label="슬라이더로 글빵 레시피 미세 조정">
         <h3>③ 🎚️ 슬라이더로 미세 조정</h3>
-        <p>지금 기분에 맞게 문체를 살짝 조절해봐요.</p>
+        <p>지금 기분에 맞게 글빵 레시피를 살짝 조절해봐요.</p>
         <div class="slider-group">
           <label>짧은 문장 ↔ 긴 문장 <input id="slider-length" type="range" min="0" max="100" value="50" /></label>
           <label>담백함 ↔ 화려함 <input id="slider-richness" type="range" min="0" max="100" value="50" /></label>
@@ -300,7 +300,7 @@
 
 <!-- ───── 푸터 ───── -->
 <footer class="site-footer" role="contentinfo">
-  <p>🍞 글빵 (GeulBbang) — 초고를 다듬고, 나만의 문체를 키우는 글쓰기 캔버스</p>
+  <p>🍞 글빵 (GeulBbang) — 초고를 다듬고, 나만의 글빵 레시피를 키우는 글쓰기 캔버스</p>
   <p style="margin-top:4px;">오늘도 한 조각씩, 내 글을 더 맛있게 구워요.</p>
 </footer>
 
