@@ -11,7 +11,7 @@ export const BREAD_GRADES = [
   { level: 3,  name: '식빵',       emoji: '🍞', description: '드디어 식빵이 됐어요! 첫 빵 완성!' },
   { level: 6,  name: '모닝빵',     emoji: '🥐', description: '폭신폭신 모닝빵! 글쓰기 실력이 늘고 있어요!' },
   { level: 10, name: '크루아상',   emoji: '🥐', description: '겹겹이 쌓인 크루아상! 문장이 쫄깃해지고 있어요!' },
-  { level: 15, name: '바게트',     emoji: '🥖', description: '바삭한 바게트! 자신만의 문체가 생겼어요!' },
+  { level: 15, name: '바게트',     emoji: '🥖', description: '바삭한 바게트! 자신만의 글빵 레시피가 생겼어요!' },
   { level: 20, name: '명품 바게트', emoji: '🥖✨', description: '드디어 명품 바게트! 글쓰기 마스터!' },
 ];
 
@@ -121,19 +121,19 @@ export const BADGE_DEFS = [
   {
     id: 'recipe_first',
     name: '첫 레시피 도전 🎨',
-    description: '처음으로 문체 레시피를 선택해 빵을 구웠어요!',
+    description: '처음으로 글빵 레시피를 선택해 빵을 구웠어요!',
     check: (state, extra) => extra && extra.selectedRecipe && extra.selectedRecipe !== 'free',
   },
   {
     id: 'recipe_variety_3',
     name: '다채로운 제빵사 🎭',
-    description: '3가지 이상의 문체 레시피를 체험했어요!',
+    description: '3가지 이상의 글빵 레시피를 체험했어요!',
     check: (state) => Object.keys(state.recipeUsage || {}).filter(k => k !== 'free').length >= 3,
   },
   {
     id: 'recipe_all',
-    name: '문체 마스터 🏆',
-    description: '6가지 문체 레시피를 모두 체험했어요!',
+    name: '글빵 레시피 마스터 🏆',
+    description: '6가지 글빵 레시피를 모두 체험했어요!',
     check: (state) => Object.keys(state.recipeUsage || {}).filter(k => k !== 'free').length >= 6,
   },
   {
@@ -150,20 +150,20 @@ export const BADGE_DEFS = [
   },
   {
     id: 'custom_style_complete',
-    name: '나만의 문체 완성! 🏆',
+    name: '나만의 글빵 레시피 완성! 🏆',
     description: '나만의 시그니처 빵을 완성했어요!',
     check: (state) => Boolean(state.customStyle && state.customStyle.ready),
   },
   {
     id: 'style_fingerprint_first',
-    name: '문체 지문 첫 분석 🔎',
+    name: '글빵 레시피 지문 첫 분석 🔎',
     description: '내 글 분석 결과를 시그니처 빵에 반영했어요!',
     check: (state) => Boolean(state.customStyle && state.customStyle.fingerprint && state.customStyle.fingerprint.applied),
   },
   {
     id: 'slider_artisan',
     name: '슬라이더 장인 🎚️',
-    description: '슬라이더로 문체를 3번 이상 미세 조정했어요!',
+    description: '슬라이더로 글빵 레시피를 3번 이상 미세 조정했어요!',
     check: (state) => ((state.customStyle && state.customStyle.sliderAppliedCount) || 0) >= 3,
   },
 ];

@@ -16,7 +16,7 @@ const SLIDER_RANGE_FIRST_THIRD_MAX = 32;
 const SLIDER_RANGE_SECOND_THIRD_MAX = 66;
 const MAX_TOP_SUGGESTIONS = 3;
 const TOP_SUGGESTIONS_TITLE_BASE = '가장 먼저 보면 좋은 제안';
-const RECIPE_TOGGLE_LABEL = '문체 레시피 선택하기';
+const RECIPE_TOGGLE_LABEL = '글빵 레시피 선택하기';
 const NO_ANALYSIS_TEXT_MESSAGE = '아직 분석할 글이 없어요. 먼저 글을 굽고 다시 눌러봐요! ✍️';
 const ANALYSIS_IDLE_MESSAGE = '아직 분석 전이에요. 글을 굽고 나서 눌러보세요! 🍞';
 
@@ -38,7 +38,7 @@ const ONBOARDING_STEPS = [
     message: '쓰기 → 빵 굽기(첨삭) → 고쳐쓰기 → 다시 굽기! 이 과정을 반복하면 경험치와 문장력이 함께 올라가요.',
   },
   {
-    title: '🎨 나만의 문체도 만들 수 있어요',
+    title: '🎨 나만의 글빵 레시피도 만들 수 있어요',
     message: '설문 + 내 글 분석 + 슬라이더로 나만의 시그니처 빵을 완성해봐요. 자, 첫 빵을 구워볼까요? 🚀',
   },
 ];
@@ -191,9 +191,9 @@ function createDefaultCustomStyle() {
       '문장이 너무 길어지면 끊어 읽기 좋게 나눠봐요.',
     ],
     encouragements: [
-      '좋아요! 내 문체를 찾는 연습이 잘 되고 있어요! 🌟',
+      '좋아요! 내 글빵 레시피를 찾는 연습이 잘 되고 있어요! 🌟',
       '한 줄 한 줄이 너만의 시그니처가 되고 있어요! 🏆',
-      '지금처럼 쓰면 내 문체가 점점 선명해져요! ✨',
+      '지금처럼 쓰면 내 글빵 레시피가 점점 선명해져요! ✨',
     ],
     exampleSentences: ['오늘의 마음을 담아, 나만의 온도로 한 줄을 구웠다.'],
     survey: {
@@ -374,7 +374,7 @@ function renderRecipeCards() {
   const customRecipe = getRecipeProfile(CUSTOM_SIGNATURE_ID);
   const customMood = customRecipe.ready
     ? customRecipe.mood
-    : '🌱 설문·분석·슬라이더로 내 문체를 완성해요';
+    : '🌱 설문·분석·슬라이더로 내 글빵 레시피를 완성해요';
   const customCard = createRecipeCard(
     { id: CUSTOM_SIGNATURE_ID, name: '🏆 나만의 시그니처 빵', mood: customMood },
     state.selectedRecipe === CUSTOM_SIGNATURE_ID,
@@ -550,7 +550,7 @@ function renderFeedback(result) {
   }
 
   if (selectedProfile) {
-    const encouragements = selectedProfile.encouragements || ['좋은 흐름이에요! 내 문체를 살려 더 다듬어봐요!'];
+    const encouragements = selectedProfile.encouragements || ['좋은 흐름이에요! 내 글빵 레시피를 살려 더 다듬어봐요!'];
     const guidelines = selectedProfile.editingGuidelines || ['핵심 한 줄을 먼저 또렷하게 써봐요.'];
     const encouragement = encouragements[Math.floor(Math.random() * encouragements.length)];
     const guideline = guidelines[Math.floor(Math.random() * guidelines.length)];
@@ -936,7 +936,7 @@ function handleCustomAnalyze() {
   }
   latestFingerprint = analyzeWritingFingerprint(texts);
   styleAnalysisResultEl.textContent = renderFingerprintSummary(latestFingerprint);
-  showToast('🔎 내 글 문체 지문 분석이 완료됐어요!', 'info');
+  showToast('🔎 내 글 글빵 레시피 지문 분석이 완료됐어요!', 'info');
 }
 
 function handleCustomAnalysisApply() {
@@ -958,10 +958,10 @@ function handleCustomAnalysisApply() {
   state.customStyle.styleFeatures.vocabulary = buildVocabularyText(state.customStyle.sliders.richness, selectedWords);
   state.customStyle.editingGuidelines = [
     `현재 평균 문장 길이(${latestFingerprint.avgSentenceLength}자)를 유지하며 한두 문장만 더 짧게 끊어 리듬을 조절해봐요.`,
-    `자주 쓰는 단어(${latestFingerprint.topWords.slice(0, 3).join(', ') || '핵심 단어'})를 의도적으로 배치해 문체를 선명하게 해봐요.`,
+    `자주 쓰는 단어(${latestFingerprint.topWords.slice(0, 3).join(', ') || '핵심 단어'})를 의도적으로 배치해 글빵 레시피를 선명하게 해봐요.`,
     `물음표(${latestFingerprint.questionCount})와 느낌표(${latestFingerprint.exclamationCount}) 개수를 조절해 감정 온도를 맞춰봐요.`,
   ];
-  state.customStyle.mood = `🧬 내 글 분석 기반 문체 (${latestFingerprint.sentenceStyle}, ${latestFingerprint.toneTrend})`;
+  state.customStyle.mood = `🧬 내 글 분석 기반 글빵 레시피 (${latestFingerprint.sentenceStyle}, ${latestFingerprint.toneTrend})`;
   state.customStyle.updatedAt = todayString();
 
   saveState(state);
@@ -987,14 +987,14 @@ function handleSliderApply() {
     `${buildVocabularyText(values.richness, keywords)} 흐름으로 단어를 골라보세요.`,
   ];
   state.customStyle.exampleSentences = [buildSliderPreviewText(values).replace('미리보기: ', '')];
-  state.customStyle.mood = `🎚️ 슬라이더 조율형 문체 (${state.customStyle.sliderAppliedCount}회 조정)`;
+  state.customStyle.mood = `🎚️ 슬라이더 조율형 글빵 레시피 (${state.customStyle.sliderAppliedCount}회 조정)`;
   state.customStyle.updatedAt = todayString();
 
   saveState(state);
   renderRecipeCards();
   updateCustomStylePanel();
   updateBadgesWithToast({ selectedRecipe: state.selectedRecipe });
-  showToast('🎚️ 슬라이더 설정을 문체에 반영했어요!', 'success');
+  showToast('🎚️ 슬라이더 설정을 글빵 레시피에 반영했어요!', 'success');
 }
 
 function updateCustomStylePanel() {
