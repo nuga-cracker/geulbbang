@@ -1791,6 +1791,21 @@ body {
   transform: translateY(-2px) scale(1.1);
 }
 
+/* 텍스트 라벨 선반 아이템 — emoji 깨짐 방지용 */
+.shelf-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--bakery-wood-dark);
+  border: 1px solid var(--bakery-wood-light);
+  border-radius: var(--radius-pill);
+  padding: 2px 7px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  filter: none;
+  box-shadow: 0 1px 3px rgba(91, 58, 30, 0.12);
+}
+
 /* 창문 장식 */
 .bakery-window {
   flex-shrink: 0;
